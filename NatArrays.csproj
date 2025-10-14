@@ -7,4 +7,16 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="NatArrays.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="NatArrays.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="NatArrays.Tests\**" />
+    </ItemGroup>
+
 </Project>
