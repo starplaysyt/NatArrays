@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays", "NatArrays.csproj", "{7762053A-704E-42D2-8146-D0173101D8E5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NatArrays.Tests", "NatArrays.Tests", "{AB9947C2-F01D-4D08-AC60-5D2D0B87EF4F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays.Tests", "NatArrays.Tests\NatArrays.Tests\NatArrays.Tests.csproj", "{620ACE12-92E1-4E12-9705-1F391144DEB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays.Tests", "NatArrays.Tests\NatArrays.Tests.csproj", "{D52EFD72-21E4-4B80-8E3C-AE82AC928261}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,12 +14,11 @@ Global
 		{7762053A-704E-42D2-8146-D0173101D8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7762053A-704E-42D2-8146-D0173101D8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7762053A-704E-42D2-8146-D0173101D8E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{620ACE12-92E1-4E12-9705-1F391144DEB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{620ACE12-92E1-4E12-9705-1F391144DEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{620ACE12-92E1-4E12-9705-1F391144DEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{620ACE12-92E1-4E12-9705-1F391144DEB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{620ACE12-92E1-4E12-9705-1F391144DEB5} = {AB9947C2-F01D-4D08-AC60-5D2D0B87EF4F}
 	EndGlobalSection
 EndGlobal
