@@ -4,7 +4,7 @@ namespace NatArrays;
 /// Specifies how newly allocated or resized memory should be initialized:
 /// <list type="bullet">
 /// <item><description><see cref="Nothing"/> — leaves memory uninitialized.</description></item>
-/// <item><description><see cref="Zeroes"/> — fills memory with zeroes using <see cref="NativeMemory.Clear(nuint, nuint)"/>.</description></item>
+/// <item><description><see cref="Zeroes"/> — fills memory with zeroes using <see cref="System.Runtime.InteropServices.NativeMemory.Clear"/>.</description></item>
 /// <item><description><see cref="Constructor"/> — calls the parameterless constructor (<c>new T()</c>) for each element.</description></item>
 /// </list>
 /// </summary>
@@ -19,7 +19,7 @@ public enum InitializationMode : byte
     Nothing = 0,
 
     /// <summary>
-    /// Initializes newly allocated memory to zeroes using <see cref="NativeMemory.Clear(nuint, nuint)"/>.
+    /// Initializes newly allocated memory to zeroes using <see cref="System.Runtime.InteropServices.NativeMemory.Clear"/>.
     /// </summary>
     Zeroes = 1,
 

@@ -10,13 +10,21 @@ namespace NatArrays;
 public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
 {
     internal unsafe T* Pointer = null;
+    
+    /// <summary>
+    /// Count of matrix elements by X-coordinate
+    /// </summary>
     public int Width { get; private set; }
+    
+    /// <summary>
+    /// Count of matrix elements by Y-coordinate
+    /// </summary>
     public int Height  { get; private set; }
 
     /// <summary>
     /// Returns whether matrix is allocated or not
     /// </summary>
-    public bool IsAllocated
+    public bool IsAllocated 
     {
         get
         {
@@ -28,14 +36,14 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Gets absolute length of the array
+    /// Gets absolute length of the matrix
     /// </summary>
     public int Length => Width * Height;
 
     /// <summary>
-    /// Gets length of the array in byte representation
+    /// Gets length of the matrix in byte representation
     /// </summary>
-    public ulong ByteLength
+    public ulong ByteLength 
     {
         get
         {
@@ -47,13 +55,13 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Gets reference of the element in the array by its X and Y
+    /// Gets reference of the element in the matrix by its X and Y
     /// </summary>
     /// <param name="x"> Coordinate by Width</param>
     /// <param name="y"> Coordinate by Height</param>
     /// <exception cref="IndexOutOfRangeException"> Throws when given x or y is out of bounds of the
-    /// array</exception>
-    public ref T this[int x, int y]
+    /// matrix</exception>
+    public ref T this[int x, int y] 
     {
         get
         {
@@ -68,12 +76,12 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Gets reference of the element in the array by its absolute index
+    /// Gets reference of the element in the matrix by its absolute index
     /// </summary>
     /// <param name="i"> Absolute element index</param>
     /// <exception cref="IndexOutOfRangeException"> Throws when given element index is out of bounds of the
-    /// array</exception>
-    public ref T this[int i]
+    /// matrix</exception>
+    public ref T this[int i] 
     {
         get
         {
@@ -88,7 +96,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
     
     /// <summary>
-    /// Returns unsafe reference on the element in the array by its X and Y
+    /// Returns unsafe reference on the element in the matrix by its X and Y
     /// </summary>
     /// <param name="x"> Coordinate by width</param>
     /// <param name="y"> Coordinate by height</param>
@@ -110,7 +118,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// </code>
     /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref T GetRefUnsafe(int x, int y)
+    public ref T GetRefUnsafe(int x, int y) 
     {
         unsafe
         {
@@ -121,7 +129,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Returns unsafe reference on the element in matrix.
     /// </summary>
-    /// <param name="i"> Index in the array.</param>
+    /// <param name="i"> Index in the matrix.</param>
     /// <returns> Reference on the element in matrix.</returns>
     /// <remarks> This function <b>directly access to pointer index. Suppresses all checkups of bounds.</b>,
     /// unlike this[int i] operator. <br/> 
@@ -137,7 +145,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// </code>
     /// </example>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref T GetRefUnsafe(int i)
+    public ref T GetRefUnsafe(int i) 
     {
         unsafe
         {
@@ -146,19 +154,19 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
     
     /// <summary>
-    /// Allocates memory for the array.
+    /// Allocates memory for the matrix.
     /// </summary>
     /// <param name="width"> New matrix width</param>
     /// <param name="height"> New matrix height</param>
     /// <param name="initializationMode"> Defines what to do with new elements. </param>
-    /// <exception cref="InvalidOperationException"> Throws when an array is allocated already.</exception>
+    /// <exception cref="InvalidOperationException"> Throws when an matrix is allocated already.</exception>
     /// <exception cref="ArgumentException"> Throws when width or height is negative or zero.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode </exception>
     /// <remarks> See more about <see cref="InitializationMode"/>, that might be useful.</remarks>
-    public void Allocate(int width, int height, InitializationMode initializationMode)
+    public void Allocate(int width, int height, InitializationMode initializationMode) 
     {
-        if (IsAllocated) throw new InvalidOperationException("Array is already allocated.");
+        if (IsAllocated) throw new InvalidOperationException("Matrix is already allocated.");
         if (width <= 0) throw new ArgumentException("Width must be positive.");
         if (height <= 0) throw new ArgumentException("Height must be positive.");
 
@@ -191,22 +199,22 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Resizes a matrix array with saving matrix alignment.
+    /// Resizes the matrix with saving matrix alignment.
     /// </summary>
     /// <param name="newWidth"> New matrix width</param>
     /// <param name="newHeight"> New matrix height</param>
     /// <param name="initializationMode"> Defines what to do with new elements</param>
     /// <exception cref="ArgumentException"> Throws when width or height is negative or zero.</exception>
-    /// <exception cref="InvalidOperationException"> Throws when an array is not allocated.</exception>
+    /// <exception cref="InvalidOperationException"> Throws when an matrix is not allocated.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode </exception>
     /// <remarks> Neither call constructor, nor setting data to zeroes - only reallocates memory.</remarks>
     /// <remarks> See more about <see cref="InitializationMode"/>, that might be useful.</remarks>
     public void Resize(int newWidth,
         int newHeight,
-        InitializationMode initializationMode = InitializationMode.Nothing)
+        InitializationMode initializationMode = InitializationMode.Nothing) 
     {
-        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        if (!IsAllocated) throw new InvalidOperationException("matrix is not allocated.");
         if (newWidth <= 0) throw new ArgumentException("Width must be positive.");
         if (newHeight <= 0) throw new ArgumentException("Height must be positive.");
         if (newWidth == Width && newHeight == Height) return; // Nothing changed - do nothing
@@ -222,7 +230,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
             var reallocateBytes = (nuint)(newWidth * newHeight * sizeof(T)); // How many bytes will be given to allocator
             var copyBytes = (nuint)(copyWidth * sizeof(T)); // How many bytes we need to copy
 
-            // Perform reallocation before moving when array length increasing
+            // Perform reallocation before moving when matrix length increasing
             if (newWidth * newHeight > oldWidth * oldHeight)
             {
                 var localPtr = (T*)NativeMemory.Realloc(Pointer, reallocateBytes);
@@ -254,7 +262,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                 }
             }
 
-            // Performing reallocation after moving data. When array length decreasing
+            // Performing reallocation after moving data. When matrix length decreasing
             if (newWidth * newHeight < oldWidth * oldHeight)
             {
                 var localPtr = (T*)NativeMemory.Realloc(Pointer, reallocateBytes);
@@ -263,7 +271,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                 Pointer = localPtr;
             }
             
-            // Post-processing new array cells
+            // Post-processing new matrix cells
             switch (initializationMode)
             {
                 case InitializationMode.Nothing:
@@ -311,13 +319,13 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Clears data in array.
+    /// Clears data in matrix.
     /// </summary>
     /// <param name="initializationMode"> Defines what method will be used</param>
-    /// <exception cref="InvalidOperationException"> Throws when an array is not allocated.</exception>
-    public void Clear(InitializationMode initializationMode = InitializationMode.Zeroes)
+    /// <exception cref="InvalidOperationException"> Throws when an matrix is not allocated.</exception>
+    public void Clear(InitializationMode initializationMode = InitializationMode.Zeroes) 
     {
-        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
         
         unsafe
         {
@@ -346,9 +354,14 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
         }
     }
 
-    public void Fill(T value)
+    /// <summary>
+    /// Fills matrix cells with given value
+    /// </summary>
+    /// <param name="value"> Value to be placed in matrix cells</param>
+    /// <exception cref="InvalidOperationException"> Throws when matrix is not allocated</exception>
+    public void Fill(T value) 
     {
-        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
 
         unsafe
         {
@@ -356,11 +369,54 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                 Pointer[i] = value;
         }
     }
+
+    /// <summary>
+    /// Returns a managed matrix from this unmanaged array.
+    /// </summary>
+    /// <returns> New managed matrix</returns>
+    /// <exception cref="InvalidOperationException"> Throws when matrix is not allocated</exception>
+    public T[,] ToManagedMatrix() 
+    {
+        if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
+        
+        var output = new T[Width, Height];
+
+        unsafe
+        {
+            for (var x = 0; x < Width; x++)
+                for (var y = 0; y < Height; y++) 
+                   output[x, y] = Pointer[y * Width + x];
+        }
+
+        return output;
+    }
     
     /// <summary>
-    /// Deallocates all memory used by this array.
+    /// Allocates an unmanaged matrix with elements from the managed array.
     /// </summary>
-    public void Deallocate()
+    /// <param name="matrix"> Managed matrix</param>
+    /// <exception cref="InvalidOperationException"> Throws when matrix is already allocated</exception>
+    public void AllocateManaged(T[,] matrix) 
+    {
+        if (IsAllocated) throw new InvalidOperationException("Matrix is already allocated.");
+        ArgumentNullException.ThrowIfNull(matrix);
+
+        unsafe
+        {
+            Width = matrix.GetLength(0);
+            Height = matrix.GetLength(1);
+            Pointer = (T*)NativeMemory.Alloc((nuint)(Width * Height), (nuint)sizeof(T));
+            
+            for (var y = 0; y < Height; y++)
+                for (var x = 0; x < Width; x++)
+                    Pointer[y * Width + x] = matrix[x, y];
+        }
+    }
+    
+    /// <summary>
+    /// Deallocates all memory used by this matrix.
+    /// </summary>
+    public void Deallocate() 
     {
         if (!IsAllocated) return;
 
@@ -376,13 +432,13 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Calls <c>Deallocate()</c> and do <c>SuppressFinalize(this)</c>
     /// </summary>
-    public void Dispose()
+    public void Dispose() 
     {
         Deallocate();
         GC.SuppressFinalize(this);
     }
 
-    ~PointerMatrix()
+    ~PointerMatrix() 
     {
         Deallocate();
     }

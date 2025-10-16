@@ -161,6 +161,45 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
+    /// Allocates an unmanaged array with elements from the managed array.
+    /// </summary>
+    /// <param name="array"> Managed array</param>
+    /// <exception cref="InvalidOperationException"> Throws when the array is already allocated. </exception>
+    public void AllocateManaged(T[] array)
+    {
+        if (IsAllocated) throw new InvalidOperationException("Array is already allocated.");
+
+        unsafe
+        {
+            Pointer = (T*)NativeMemory.Alloc((UIntPtr)array.Length, (UIntPtr)array.Length);
+        
+            Length = array.Length;
+            
+            for (var i = 0; i < Length; i++)
+            {
+                Pointer[i] = array[i];
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Returns a managed array from this unmanaged array.
+    /// </summary>
+    /// <returns> New managed array</returns>
+    /// <exception cref="InvalidOperationException"> Throws when the array is not allocated</exception>
+    public T[] ToManagedArray()
+    {
+        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        
+        var output = new T[Length];
+        for (var i = 0; i < Length; i++)
+        {
+            output[i] = GetRefUnsafe(i);
+        }
+        return output;
+    }
+
+    /// <summary>
     /// Deallocates all memory used by this array.
     /// </summary>
     public void Deallocate()
