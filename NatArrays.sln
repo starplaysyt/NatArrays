@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays", "NatArrays.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays.Tests", "NatArrays.Tests\NatArrays.Tests.csproj", "{D52EFD72-21E4-4B80-8E3C-AE82AC928261}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatArrays.Debug", "NatArrays.Debug\NatArrays.Debug.csproj", "{1DF735EC-3956-493E-A491-0B7351F3442D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D52EFD72-21E4-4B80-8E3C-AE82AC928261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DF735EC-3956-493E-A491-0B7351F3442D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DF735EC-3956-493E-A491-0B7351F3442D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DF735EC-3956-493E-A491-0B7351F3442D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DF735EC-3956-493E-A491-0B7351F3442D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

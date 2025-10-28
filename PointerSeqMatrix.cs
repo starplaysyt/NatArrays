@@ -7,19 +7,19 @@ namespace NatArrays;
 /// Implementation of a sequentially mapped matrix (row-major).
 /// </summary>
 /// <typeparam name="T"> Unmanaged datatype</typeparam>
-public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
+public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
 {
     internal unsafe T* Pointer = null;
-    
+
     /// <summary>
     /// Count of matrix elements by X-coordinate
     /// </summary>
     public int Width { get; private set; }
-    
+
     /// <summary>
     /// Count of matrix elements by Y-coordinate
     /// </summary>
-    public int Height  { get; private set; }
+    public int Height { get; private set; }
 
     /// <summary>
     /// Returns whether matrix is allocated or not
@@ -158,13 +158,13 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <param name="width"> New matrix width</param>
     /// <param name="height"> New matrix height</param>
-    /// <param name="initializationMode"> Defines what to do with new elements. </param>
+    /// <param name="mode"> Defines what to do with new elements. </param>
     /// <exception cref="InvalidOperationException"> Throws when an matrix is allocated already.</exception>
     /// <exception cref="ArgumentException"> Throws when width or height is negative or zero.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode </exception>
     /// <remarks> See more about <see cref="InitializationMode"/>, that might be useful.</remarks>
-    public void Allocate(int width, int height, InitializationMode initializationMode) 
+    public void Allocate(int width, int height, InitializationMode mode = InitializationMode.Nothing) 
     {
         if (IsAllocated) throw new InvalidOperationException("Matrix is already allocated.");
         if (width <= 0) throw new ArgumentException("Width must be positive.");
@@ -176,7 +176,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
             if (Pointer == null)
                 throw new OutOfMemoryException($"Failed to allocate {ByteLength} bytes.");
 
-            switch (initializationMode)
+            switch (mode)
             {
                 case InitializationMode.Nothing:
                     break;
@@ -190,7 +190,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                         Pointer[i] = new T();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(initializationMode), initializationMode, null);
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
         }
 
@@ -203,7 +203,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <param name="newWidth"> New matrix width</param>
     /// <param name="newHeight"> New matrix height</param>
-    /// <param name="initializationMode"> Defines what to do with new elements</param>
+    /// <param name="mode"> Defines what to do with new elements</param>
     /// <exception cref="ArgumentException"> Throws when width or height is negative or zero.</exception>
     /// <exception cref="InvalidOperationException"> Throws when an matrix is not allocated.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
@@ -212,9 +212,9 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// <remarks> See more about <see cref="InitializationMode"/>, that might be useful.</remarks>
     public void Resize(int newWidth,
         int newHeight,
-        InitializationMode initializationMode = InitializationMode.Nothing) 
+        InitializationMode mode = InitializationMode.Nothing) 
     {
-        if (!IsAllocated) throw new InvalidOperationException("matrix is not allocated.");
+        if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
         if (newWidth <= 0) throw new ArgumentException("Width must be positive.");
         if (newHeight <= 0) throw new ArgumentException("Height must be positive.");
         if (newWidth == Width && newHeight == Height) return; // Nothing changed - do nothing
@@ -272,7 +272,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
             }
             
             // Post-processing new matrix cells
-            switch (initializationMode)
+            switch (mode)
             {
                 case InitializationMode.Nothing:
                     break;
@@ -310,7 +310,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(initializationMode), initializationMode, null);
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }
 
             Width = newWidth;
@@ -323,7 +323,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <param name="initializationMode"> Defines what method will be used</param>
     /// <exception cref="InvalidOperationException"> Throws when an matrix is not allocated.</exception>
-    public void Clear(InitializationMode initializationMode = InitializationMode.Zeroes) 
+    public void Clear(InitializationMode initializationMode = InitializationMode.Zeroes)
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
         
@@ -336,16 +336,12 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
                     return;
                 // Clearing with zeroes
                 case InitializationMode.Zeroes:
-                    
                     NativeMemory.Clear(Pointer, (nuint)ByteLength);
-                    
                     break;
                 // Clearing with constructor
                 case InitializationMode.Constructor:
-                    
                     for (var i = 0; i < Length; i++)
                         Pointer[i] = new T();
-                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(initializationMode), initializationMode, null);
@@ -371,11 +367,11 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
     }
 
     /// <summary>
-    /// Returns a managed matrix from this unmanaged array.
+    /// Returns a managed copy of this matrix.
     /// </summary>
     /// <returns> New managed matrix</returns>
     /// <exception cref="InvalidOperationException"> Throws when matrix is not allocated</exception>
-    public T[,] ToManagedMatrix() 
+    public T[,] GetManaged() 
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
         
@@ -438,7 +434,7 @@ public sealed class PointerMatrix<T> : IDisposable where T : unmanaged
         GC.SuppressFinalize(this);
     }
 
-    ~PointerMatrix() 
+    ~PointerSeqMatrix() 
     {
         Deallocate();
     }
