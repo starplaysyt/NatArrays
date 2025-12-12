@@ -107,9 +107,9 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <example>
     /// Use it like that to achieve maximum performance. 
     /// <code>
-    ///     for (int y = 0; y &lt; matrix.Height; y++)
+    ///     for (var y = 0; y &lt; matrix.Height; y++)
     ///     {
-    ///         for (int x = 0; x &lt; matrix.Width; x++)
+    ///         for (var x = 0; x &lt; matrix.Width; x++)
     ///         {
     ///             ref var value = ref matrix.GetRefUnsafe(x, y);
     ///             value = default; // or any operation
@@ -137,7 +137,7 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <example>
     /// Use it like that to achieve maximum performance. 
     /// <code>
-    /// for (int i = 0; i &lt; matrix.Length; y++)
+    /// for (var i = 0; i &lt; matrix.Length; y++)
     /// {
     ///     ref var value = ref matrix.GetRefUnsafe(i);
     ///     value = default; // or any operation
