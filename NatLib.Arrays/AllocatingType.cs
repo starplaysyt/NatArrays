@@ -1,4 +1,4 @@
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 /// <summary>
 /// Defines the behavior of memory allocation.

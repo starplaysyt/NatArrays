@@ -5,10 +5,11 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>NatArrays.Debug</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NatArrays.csproj" />
+      <ProjectReference Include="..\NatLib.Arrays\NatLib.Arrays.csproj" />
     </ItemGroup>
 
 </Project>

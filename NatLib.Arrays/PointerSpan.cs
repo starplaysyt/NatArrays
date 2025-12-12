@@ -1,4 +1,4 @@
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 /// <summary>
 /// Interface to communicate with PointerArray a bit faster (WIP). Does not own the pointer directly,

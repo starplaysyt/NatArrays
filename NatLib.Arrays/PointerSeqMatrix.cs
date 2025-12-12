@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 /// <summary>
 /// Implementation of a sequentially mapped matrix (row-major).

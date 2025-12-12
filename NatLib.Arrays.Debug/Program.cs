@@ -1,6 +1,7 @@
 ﻿using System;
+using NatLib.Arrays;
 
-namespace NatArrays.Debug;
+namespace NatLib.Arrays.Debug;
 
 public class Program
 {

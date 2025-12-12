@@ -1,4 +1,4 @@
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 /// <summary>
 /// Specifies how newly allocated or resized memory should be initialized:

@@ -1,12 +1,13 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 /// <summary>
 /// Implementation of a simple array in unmanaged memory.
 /// </summary>
 /// <typeparam name="T"> Unmanaged datatype</typeparam>
+
 public sealed class PointerArray<T> : IDisposable where T : unmanaged
 {
     internal unsafe T* Pointer = null;

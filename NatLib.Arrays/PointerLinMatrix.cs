@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace NatArrays;
+namespace NatLib.Arrays;
 
 public sealed class PointerLinMatrix<T> : IDisposable where T : unmanaged
 {
