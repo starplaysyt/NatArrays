@@ -2,8 +2,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace NatLib.Structs;
+namespace NatLib.Core;
 
+/// <summary>
+/// Presents simple struct with 4 variables
+/// </summary>
+/// <typeparam name="T">Type of each variable</typeparam>
 public struct Unit4<T> : IEquatable<Unit4<T>> where T : INumber<T>
 {
     public T X;

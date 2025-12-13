@@ -2,8 +2,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace NatLib.Structs;
+namespace NatLib.Core;
 
+/// <summary>
+/// Presents simple struct with 3 variables
+/// </summary>
+/// <typeparam name="T">Type of each variable</typeparam>
 public struct Unit3<T> : IEquatable<Unit3<T>> where T : INumber<T>
 {
     public T X;
