@@ -10,7 +10,7 @@ namespace NatLib.Benchmark
         {
             var config = ManualConfig.Create(DefaultConfig.Instance)
                 .AddExporter(MarkdownExporter.Default);
-            var summary = BenchmarkRunner.Run<VectorBenchmarks>(config, args);
+            var summary = BenchmarkRunner.Run<Unit2WithComposed>(config, args);
 
             // Use this to select benchmarks from the console:
             // var summaries = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
