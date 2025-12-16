@@ -246,7 +246,7 @@ namespace NatLib.Benchmark
 
             for (var i = 0; i < Iterations; i++)
             {
-                loc1.Add(loc2);
+                Unit2<double>.Add(ref loc1, loc2);
             }
             
             _consumer.Consume(loc1);
@@ -260,7 +260,7 @@ namespace NatLib.Benchmark
 
             for (var i = 0; i < Iterations; i++)
             {
-                loc1.Add(loc2);
+                Point2<double>.Add(ref loc1, loc2);
             }
             
             _consumer.Consume(loc1);
