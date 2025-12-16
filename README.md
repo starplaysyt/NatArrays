@@ -1,4 +1,27 @@
-# NatArrays — Unmanaged Arrays for C#
+# NatLib — idk what exactly it is for C#
+
+That is a benchmark test for struct operations. Only for Unit2 and composers of Unit2. Why I placed it here? 'Cos I want to see on what i wasted all day! Oh, you just need to look on `Mean` column and divide it on 1.000.000+- to get time for one operation.
+| Method                      | Mean       | Error   | StdDev  | Allocated |
+|---------------------------- |-----------:|--------:|--------:|----------:|
+| Unit2_ReadProperty          |   216.4 us | 0.11 us | 0.10 us |         - |
+| Unit2_WriteProperty         |   216.5 us | 0.14 us | 0.12 us |         - |
+| ComposedUnit2_ReadProperty  |   216.5 us | 0.18 us | 0.15 us |         - |
+| ComposedUnit2_WriteProperty |   216.4 us | 0.14 us | 0.12 us |         - |
+| Unit2_Create                | 1,297.9 us | 0.41 us | 0.38 us |         - |
+| Composed_Create             | 1,297.6 us | 0.25 us | 0.23 us |         - |
+| Unit2ToComposed             | 1,081.6 us | 0.39 us | 0.36 us |         - |
+| ComposedToUnit2             | 1,081.3 us | 0.37 us | 0.33 us |         - |
+| Unit2_ObjectArithmetic      | 1,082.1 us | 1.57 us | 1.31 us |         - |
+| Composed_ObjectArithmetic   | 1,083.5 us | 2.63 us | 2.33 us |         - |
+| Unit2_TArithmetic           | 1,297.5 us | 0.43 us | 0.36 us |         - |
+| Composed_TArithmetic        | 1,297.5 us | 0.21 us | 0.18 us |         - |
+| Unit2_IEquatable            |   541.3 us | 0.55 us | 0.46 us |         - |
+| Composed_IEquatable         |   541.1 us | 0.27 us | 0.24 us |         - |
+| Unit2_Equals                |   655.6 us | 4.83 us | 4.52 us |         - |
+| Composed_Equals             |   650.5 us | 1.26 us | 1.12 us |         - |
+| Unit2_Existing              | 2,591.6 us | 0.45 us | 0.42 us |         - |
+| Composed_Existing           | 2,592.1 us | 0.61 us | 0.51 us |         - |
+
 
 A **high-performance, unmanaged array** implementation for C# that allows direct control over memory allocation, reallocation, and deallocation using `NativeMemory`.  
 Designed for systems programming, game engines, and any low-level environment where performance and control matter more than safety.
