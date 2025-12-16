@@ -3,6 +3,7 @@ using BenchmarkDotNet;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using NatLib.Core;
+using NatLib.Core.Structures;
 
 namespace NatLib.Benchmark
 {

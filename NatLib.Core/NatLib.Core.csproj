@@ -14,9 +14,4 @@
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Operations\" />
-      <Folder Include="Structures\" />
-    </ItemGroup>
-
 </Project>

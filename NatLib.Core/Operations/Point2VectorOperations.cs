@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
+using NatLib.Core.Structures;
 
-namespace NatLib.Core;
+namespace NatLib.Core.Operations;
 
 public static class Point2VectorOperations
 {

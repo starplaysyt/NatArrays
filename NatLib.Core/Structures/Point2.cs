@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
-using System.Runtime.CompilerServices;
 
-namespace NatLib.Core;
+namespace NatLib.Core.Structures;
 
 public struct Point2<T> : IEquatable<Point2<T>> where T : INumber<T>
 {

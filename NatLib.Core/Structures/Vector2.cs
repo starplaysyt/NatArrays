@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace NatLib.Core;
+namespace NatLib.Core.Structures;
 
 public struct Vector2<T> : IEquatable<Vector2<T>> where T : INumber<T>
 {

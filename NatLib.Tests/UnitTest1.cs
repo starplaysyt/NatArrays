@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using NatLib.Core;
+using NatLib.Core.Structures;
 using Xunit.Abstractions;
 
 namespace NatLib.Tests;

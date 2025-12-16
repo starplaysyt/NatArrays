@@ -1,8 +1,8 @@
-﻿using System.Numerics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace NatLib.Core;
+namespace NatLib.Core.Structures;
 
 /// <summary>
 /// Presents simple struct with 4 variables
