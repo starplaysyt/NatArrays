@@ -2,7 +2,7 @@
 
 namespace NatLib.Core;
 
-public static class Vector2Extensions
+public static class Vector2Operations
 {
     // ReSharper disable MemberCanBePrivate.Global
     
