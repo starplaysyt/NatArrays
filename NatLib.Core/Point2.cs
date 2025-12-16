@@ -12,8 +12,8 @@ public struct Point2<T> : IEquatable<Point2<T>> where T : INumber<T>
     public T Y { get => _value.Y; set => _value.Y = value; }
     
     // Zero and one static properties
-    public static readonly Vector2<T> Zero = new (T.Zero, T.Zero);
-    public static readonly Vector2<T> One = new (T.One, T.One);
+    public static readonly Point2<T> Zero = new (T.Zero, T.Zero);
+    public static readonly Point2<T> One = new (T.One, T.One);
     
     // Constructors
     public Point2() : this(T.Zero, T.Zero) { }

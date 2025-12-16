@@ -15,8 +15,8 @@ public struct Unit2<T> : IEquatable<Unit2<T>> where T : INumber<T>
     public T Y;
     
     // Zero and one static properties
-    public static readonly Vector2<T> Zero = new (T.Zero, T.Zero);
-    public static readonly Vector2<T> One = new (T.One, T.One);
+    public static readonly Unit2<T> Zero = new (T.Zero, T.Zero);
+    public static readonly Unit2<T> One = new (T.One, T.One);
     
     // Constructors
     public Unit2(T x, T y) { X = x; Y = y; }
