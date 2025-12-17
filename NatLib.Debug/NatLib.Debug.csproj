@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\NatLib.Arrays\NatLib.Arrays.csproj" />
+      <ProjectReference Include="..\NatLib.UniConsole\NatLib.UniConsole.csproj" />
       <ProjectReference Include="..\NatLib.Core\NatLib.Core.csproj" />
     </ItemGroup>
 

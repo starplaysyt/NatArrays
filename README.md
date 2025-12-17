@@ -3,6 +3,7 @@
 That is a benchmark test for struct operations. Only for Unit2 and composers of Unit2. Why I placed it here? 'Cos I want to see on what i wasted all day!
 
 Oh, you just need to look on `Mean` column and divide it on 1.000.000+- to get time for one operation.
+
 | Method                      | Mean       | Error   | StdDev  | Allocated |
 |---------------------------- |-----------:|--------:|--------:|----------:|
 | Unit2_ReadProperty          |   216.5 us | 0.27 us | 0.21 us |         - |

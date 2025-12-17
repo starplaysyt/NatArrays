@@ -1,7 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace NatLib.Debug;
 
-using NatLib.Core.Operations;
-using NatLib.Core.Structures;
-
-Console.WriteLine("Hello, World!");
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Console.WriteLine("Hello World!");
+    }
+}
 
