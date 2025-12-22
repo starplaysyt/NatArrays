@@ -39,6 +39,21 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
         return Pointer[i];
     } } }
 
+    #region ** Unsafe Region **
+    /// <summary>
+    /// Returns ref by i to element without any checks.
+    /// </summary>
+    public ref T UnsafeRef(int i) { unsafe { return ref Pointer[i]; } }
+    /// <summary>
+    /// Returns element by i without any checks.
+    /// </summary>
+    public T UnsafeGet(int i) { unsafe { return Pointer[i]; } }
+    /// <summary>
+    /// Sets element by i without any checks.
+    /// </summary>
+    public void UnsafeSet(int i, T value) { unsafe { Pointer[i] = value; } }
+    #endregion
+
     /// <summary>
     /// Gets <c>Span&lt;T&gt;</c> for an allocated pointer array. 
     /// </summary>
@@ -48,7 +63,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     {
         return IsAllocated
             ? new Span<T>(Pointer, Length)
-            : throw new InvalidOperationException("Tried to get span from a deallocated array.");
+            : throw new InvalidOperationException("Array is not allocated.");
     } }
 
     /// <summary>
@@ -127,8 +142,6 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
             }
         }
     }
-    
-
 
     /// <summary>
     /// Allocates an unmanaged array with elements from the managed array.
