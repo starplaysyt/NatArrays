@@ -32,71 +32,56 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <param name="i"> Index in the array.</param>
     /// <exception cref="IndexOutOfRangeException"> Throws when index is out of range of array.</exception>
-    public ref T this[int i] { get { unsafe {
-        if (i >= 0 && i < Length) return ref Pointer[i];
-        throw new IndexOutOfRangeException($"Index {i} is out of range {Length}.");
+    public T this[int i] { get { unsafe {
+        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        if (i < 0 && i >= Length) throw new IndexOutOfRangeException($"Index {i} is out of range {Length}.");
+        
+        return Pointer[i];
     } } }
 
     /// <summary>
-    /// Returns unsafe reference on the element in array.
+    /// Gets <c>Span&lt;T&gt;</c> for an allocated pointer array. 
     /// </summary>
-    /// <param name="i"> Index in the array.</param>
-    /// <returns> Reference on the element in array.</returns>
-    /// <remarks> This function <b>directly access to pointer index. Suppresses all checkups of bounds</b>,
-    /// unlike this[int i] operator. <br/> 
-    /// </remarks>
-    /// <example>
-    /// Use it like that to achieve maximum performance. 
-    /// <code>
-    /// for (int i = 0; i &lt; array.Length; y++)
-    /// {
-    ///     ref var value = ref array.GetRefUnsafe(i);
-    ///     value = default; // or any operation
-    /// }
-    /// </code>
-    /// </example>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref T GetRefUnsafe(int i)
+    /// <exception cref="InvalidOperationException"> Throws when tried to get span from a deallocated array.</exception>
+    /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in the context.</remarks>
+    public Span<T> AsSpan() { unsafe
     {
-        unsafe
-        {
-            return ref Pointer[i];
-        }
-    }
+        return IsAllocated
+            ? new Span<T>(Pointer, Length)
+            : throw new InvalidOperationException("Tried to get span from a deallocated array.");
+    } }
 
     /// <summary>
     /// Allocates memory for an array.
     /// </summary>
     /// <param name="length"> Length of an array.</param>
-    /// <param name="initializationMode"></param>
+    /// <param name="initMode"></param>
     /// <exception cref="InvalidOperationException">Throws when memory already allocated.</exception>
     /// <exception cref="ArgumentException">Throws when length is negative or zero.</exception>
     /// <exception cref="OutOfMemoryException">Throws when allocating memory in bytes failed.</exception>
-    public void Allocate(int length, InitializationMode initializationMode = InitializationMode.Nothing)
+    public void Allocate(int length, InitializationMode initMode = InitializationMode.Nothing)
     {
-        if (length <= 0) throw new ArgumentException("Length must be positive.");
         if (IsAllocated) throw new InvalidOperationException("Array is already allocated.");
+        if (length <= 0) throw new ArgumentException("Length must be positive.");
 
         unsafe
         {
+            var ptr = (T*)NativeMemory.Alloc((nuint)length, (nuint)sizeof(T));
+            Pointer = ptr;
             Length = length;
-            Pointer = (T*)NativeMemory.Alloc((UIntPtr)length, (UIntPtr)sizeof(T));
-            if (Pointer == null)
-                throw new OutOfMemoryException($"Failed to allocate {ByteLength} bytes.");
 
-            switch (initializationMode)
+            switch (initMode)
             {
                 case InitializationMode.Nothing:
                     return;
                 case InitializationMode.Zeroes:
-                    NativeMemory.Clear(Pointer, (UIntPtr)ByteLength);
-                    break;
+                    NativeMemory.Clear(Pointer, (nuint)ByteLength);
+                    return;
                 case InitializationMode.Constructor:
-                    for (var i = 0; i < Length; i++)
-                        Pointer[i] = new T();
-                    break;
+                    new Span<T>(Pointer, Length).Fill(new T());
+                    return;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(initializationMode), initializationMode, null);
+                    throw new ArgumentOutOfRangeException(nameof(initMode), initMode, null);
             }
         }
     }
@@ -105,99 +90,78 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// Resizes array to the desired length.
     /// </summary>
     /// <param name="length"> New length of an array.</param>
-    /// <param name="initializationMode"></param>
+    /// <param name="initMode"></param>
     /// <exception cref="ArgumentException"> Throws when got length is negative or zero.</exception>
     /// <exception cref="InvalidOperationException"> Throws when an array is not allocated.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode. </exception>
-    public void Resize(int length, InitializationMode initializationMode = InitializationMode.Nothing)
+    public void Resize(int length, InitializationMode initMode = InitializationMode.Nothing)
     {
-        if (length == Length) return;
-        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
+        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated."); // State checking first.
+        if (length == Length) return; // When nothing changed - do nothing.
         if (length <= 0) throw new ArgumentException("Length must be positive.");
         
         unsafe
         {
-            var newPtr = (T*)NativeMemory.Realloc(Pointer, (UIntPtr)(length * sizeof(T)));
-            if (newPtr == null)
-                throw new OutOfMemoryException($"Failed to reallocate {ByteLength} bytes.");
-            
-            Pointer = newPtr;
-
-            if (length > Length)
-            {
-                switch (initializationMode)
-                {
-                    case InitializationMode.Nothing:
-                        break;
-                    case InitializationMode.Zeroes:
-                        var byteDiff = (nuint)((length - Length) * sizeof(T));
-                        NativeMemory.Clear(&Pointer[Length], byteDiff);
-                        break;
-                    case InitializationMode.Constructor:
-                        for (var i = Length; i < length; i++)
-                            Pointer[i] = new T();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(initializationMode), initializationMode, null);
-                }
-            }
-
+            var oldLength = Length;
+            var ptr = (T*)NativeMemory.Realloc(Pointer, (nuint)(length * sizeof(T)));
+            Pointer = ptr;
             Length = length;
+
+
+            if (length <= Length) return; // No initialization need to be done.
+            
+            switch (initMode)
+            {
+                case InitializationMode.Nothing:
+                    return;
+                case InitializationMode.Zeroes:
+                    var byteDiff = (nuint)((length - Length) * sizeof(T));
+                    NativeMemory.Clear(&Pointer[Length], byteDiff);
+                    return;
+                case InitializationMode.Constructor:
+                    new Span<T>(Pointer, Length)[oldLength..].Fill(new T());
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(initMode), initMode, null);
+            }
         }
     }
     
-    /// <summary>
-    /// Gets pointer span for an allocated pointer array. 
-    /// </summary>
-    /// <exception cref="InvalidOperationException"> Throws when tried to get span from a deallocated array.</exception>
-    /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in context.</remarks>
-    public PointerSpan<T> GetSpan()
-    {
-        if (!IsAllocated) throw new InvalidOperationException("Tried to get span from a deallocated array.");
-        unsafe
-        {
-            return new PointerSpan<T>(this);
-        }
-    }
+
 
     /// <summary>
     /// Allocates an unmanaged array with elements from the managed array.
     /// </summary>
     /// <param name="array"> Managed array</param>
     /// <exception cref="InvalidOperationException"> Throws when the array is already allocated. </exception>
-    public void AllocateManaged(T[] array)
+    public void FromManaged(T[] array)
     {
         if (IsAllocated) throw new InvalidOperationException("Array is already allocated.");
 
         unsafe
         {
-            Pointer = (T*)NativeMemory.Alloc((UIntPtr)array.Length, (UIntPtr)array.Length);
-        
+            var ptr = (T*)NativeMemory.Alloc((nuint)array.Length, (nuint)sizeof(T));
+            Pointer = ptr;
             Length = array.Length;
             
-            for (var i = 0; i < Length; i++)
-            {
-                Pointer[i] = array[i];
-            }
+            array.AsSpan().CopyTo(new Span<T>(Pointer, Length));
         }
     }
     
     /// <summary>
     /// Returns a managed array from this unmanaged array.
     /// </summary>
-    /// <returns> New managed array</returns>
+    /// <returns> New managed array, what is not connected with this array. </returns>
     /// <exception cref="InvalidOperationException"> Throws when the array is not allocated</exception>
-    public T[] ToManagedArray()
+    public T[] ToManaged()
     {
         if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
-        
-        var output = new T[Length];
-        for (var i = 0; i < Length; i++)
+
+        unsafe
         {
-            output[i] = GetRefUnsafe(i);
+            return new Span<T>(Pointer, Length).ToArray();
         }
-        return output;
     }
 
     /// <summary>
