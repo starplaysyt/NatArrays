@@ -102,7 +102,6 @@ public static class Point2VectorOperations
         where T : INumber<T>
     {
         var proj = p.ProjectOntoVector(axis);
-
         return new Point2<T>(proj.X * (T.One + T.One) - p.X, proj.Y * (T.One + T.One) - p.Y);
     }
 

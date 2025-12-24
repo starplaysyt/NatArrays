@@ -18,7 +18,6 @@ public class Program
         Console.WriteLine($"+{str1.FixCenter(7, '_')}+");
         Console.WriteLine($"+{str2.FixCenter(7, '_')}+");
         
-        //
         // Console.WriteLine("ABC".Fix(5));
         // Console.WriteLine("ABC".FixRight(5, '_'));
         // Console.WriteLine("ABCDEFG".FixRight(4));
@@ -38,7 +37,7 @@ public class Program
             "string9asdasdsadsd"
         ];
         
-        int[] sizes = new int[stringArray.Length];
+        var sizes = new int[stringArray.Length];
 
         Array.Fill(sizes, 15);
 

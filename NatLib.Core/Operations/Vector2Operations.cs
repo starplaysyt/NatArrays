@@ -10,7 +10,7 @@ public static class Vector2Operations
     // =========================
     // 1. INumber<T>
     // =========================
-
+    
     public static Vector2<T> Add<T>(this Vector2<T> a, Vector2<T> b)
         where T : INumber<T>
         => new(a.X + b.X, a.Y + b.Y);

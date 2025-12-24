@@ -163,7 +163,7 @@ public static class StringExtensions
         
         return string.Create(
             lengths.Sum() + (lengths.Length - 1) * 3 + 4, 
-            (arr, lengths, separator, alignment: alignment), 
+            (arr, lengths, separator, alignment), 
             WrapJoinSpan);
     }
     #endregion
