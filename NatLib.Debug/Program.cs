@@ -42,11 +42,11 @@ public class Program
 
         Array.Fill(sizes, 15);
 
-        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
-        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
-        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
-        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
-        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
+        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', SimpleAlignment.Center));
+        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', SimpleAlignment.Center));
+        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', SimpleAlignment.Center));
+        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', SimpleAlignment.Center));
+        Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', SimpleAlignment.Center));
     }
 }
 

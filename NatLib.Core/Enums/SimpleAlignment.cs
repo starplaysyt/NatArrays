@@ -1,6 +1,6 @@
 namespace NatLib.Core.Enums;
 
-public enum Alignment
+public enum SimpleAlignment
 {
     Left, Center, Right
 }
