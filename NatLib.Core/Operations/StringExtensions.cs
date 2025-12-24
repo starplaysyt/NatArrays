@@ -17,17 +17,17 @@ public static class StringExtensions
             dst[copy..].Fill(state.Character);  
     }
 
-    private static void FixSpan(Span<char> dst, (string Source, char Character) state, SimpleAlignment simpleAlignment)
+    private static void FixSpan(Span<char> dst, (string Source, char Character) state, Alignment alignment)
     {
-        switch (simpleAlignment)
+        switch (alignment)
         {
-            case SimpleAlignment.Left:
+            case Alignment.Begin:
                 FixSpan(dst, state);
                 break;
-            case SimpleAlignment.Center:
+            case Alignment.Center:
                 FixSpanCenter(dst, state);
                 break;
-            case SimpleAlignment.Right:
+            case Alignment.End:
                 FixSpanRight(dst, state);
                 break;
             default:
@@ -95,7 +95,7 @@ public static class StringExtensions
         return string.Create(length, (Source: str, Character: character), FixSpanCenter);
     }
 
-    public static string Fix(this string str, int length, char character, SimpleAlignment simpleAlignment)
+    public static string Fix(this string str, int length, char character, Alignment alignment)
     {
         ArgumentNullException.ThrowIfNull(str);
         ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -105,11 +105,11 @@ public static class StringExtensions
         return string.Create(
             length, 
             (Source: str, Character: character), 
-            simpleAlignment switch {
-            SimpleAlignment.Left => FixSpan,
-            SimpleAlignment.Center => FixSpanCenter,
-            SimpleAlignment.Right => FixSpanRight,
-            _ => throw new ArgumentOutOfRangeException(nameof(simpleAlignment), simpleAlignment, null)
+            alignment switch {
+            Alignment.Begin => FixSpan,
+            Alignment.Center => FixSpanCenter,
+            Alignment.End => FixSpanRight,
+            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
         });
     }
     #endregion
@@ -127,7 +127,7 @@ public static class StringExtensions
     #endregion
 
     #region Wrap Join Span Method
-    private static void WrapJoinSpan(Span<char> dst, (string[] Array, int[] Lengths, char Separator, SimpleAlignment alignment) state)
+    private static void WrapJoinSpan(Span<char> dst, (string[] Array, int[] Lengths, char Separator, Alignment alignment) state)
     {
         var array = state.Array.AsSpan();
         var lengths = state.Lengths.AsSpan();
@@ -153,7 +153,7 @@ public static class StringExtensions
     #endregion
     
     #region Wrap Join Methods
-    public static string WrapJoin(string[] arr, int[] lengths, char separator, SimpleAlignment simpleAlignment = SimpleAlignment.Left)
+    public static string WrapJoin(string[] arr, int[] lengths, char separator, Alignment alignment = Alignment.Begin)
     {
         ArgumentNullException.ThrowIfNull(arr);
         ArgumentNullException.ThrowIfNull(lengths);
@@ -163,7 +163,7 @@ public static class StringExtensions
         
         return string.Create(
             lengths.Sum() + (lengths.Length - 1) * 3 + 4, 
-            (arr, lengths, separator, alignment: simpleAlignment), 
+            (arr, lengths, separator, alignment: alignment), 
             WrapJoinSpan);
     }
     #endregion
