@@ -17,8 +17,7 @@ public sealed class PointerLinMatrix<T> : IDisposable where T : unmanaged
     
     public int Height { get; private set; }
 
-    public bool IsAllocated
-    { get { unsafe { return Pointer != null; } } } 
+    public bool IsAllocated { get { unsafe { return Pointer != null; } } } 
     
     public ref T this[int x, int y] { get { unsafe {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
