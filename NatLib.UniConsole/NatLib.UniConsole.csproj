@@ -10,4 +10,8 @@
       <ProjectReference Include="..\NatLib.Core\NatLib.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Utilities\" />
+    </ItemGroup>
+
 </Project>
