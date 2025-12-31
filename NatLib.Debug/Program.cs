@@ -52,9 +52,10 @@ public class Program
         // conv.RunConversation();
 
         RequestingUtils.RequestEnter<int>("Insert int value: ");
-        
-        RequestingUtils.ShowEnumReference(typeof(ConsoleColor));
 
+        RequestingUtils.RequestEnterWithExit("Insert enum:", typeof(ConsoleColor), out var value);
+
+        Console.WriteLine((ConsoleColor)value);
         //RequestingUtils.RequestEnter<ConsoleColor>("Insert enum value: ");
     }
 }
