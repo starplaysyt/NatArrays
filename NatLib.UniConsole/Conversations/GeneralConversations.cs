@@ -32,7 +32,7 @@ public class GeneralConversations
         Console.Write(message);
         var info = Console.ReadLine() ?? string.Empty;
         
-        if (!ReflectionConverter.TryConvert(info, type, out var retValue))
+        if (!ConvertingUtils.TryReflectionConvert(info, type, out var retValue))
         {
             ConsoleRenderer.ShowMessageBoxMultiline([
                 "Exception! Given data was not in a correct format.",

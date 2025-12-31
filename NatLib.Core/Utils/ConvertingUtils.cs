@@ -6,9 +6,9 @@ namespace NatLib.Core.Utils;
 /// <summary>
 /// Implements converter that converts string to given type when type is referenced from IParsable.
 /// </summary>
-public static class ReflectionConverter
+public static class ConvertingUtils
 {
-    public static bool TryConvert(string? input, Type targetType, out object? value)
+    public static bool TryReflectionConvert(string? input, Type targetType, out object? value)
     {
         value = null;
         
