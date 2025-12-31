@@ -21,7 +21,7 @@ public class RenderingStyleConfiguration
 
     public char EmptyBlock = ' ';
 
-    public int PreferableWidth = 40;
+    public int PreferableWidth = 70;
 
     public RenderingStyleConfiguration()
     {

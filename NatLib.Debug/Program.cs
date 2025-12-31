@@ -1,5 +1,6 @@
 ﻿using NatLib.Core.Enums;
 using NatLib.Core.Operations;
+using NatLib.UniConsole.Utils;
 
 namespace NatLib.Debug;
 
@@ -47,8 +48,14 @@ public class Program
         // Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
         // Console.WriteLine(StringExtensions.WrapJoin(stringArray, sizes, '+', Alignment.Center));
 
-        var conv = new GetIntValueConversation();
-        conv.RunConversation();
+        // var conv = new GetIntValueConversation();
+        // conv.RunConversation();
+
+        RequestingUtils.RequestEnter<int>("Insert int value: ");
+        
+        RequestingUtils.ShowEnumReference(typeof(ConsoleColor));
+
+        //RequestingUtils.RequestEnter<ConsoleColor>("Insert enum value: ");
     }
 }
 
