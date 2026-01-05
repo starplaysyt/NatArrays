@@ -51,12 +51,14 @@ public class Program
         // var conv = new GetIntValueConversation();
         // conv.RunConversation();
 
-        RequestingUtils.RequestEnter<int>("Insert int value: ");
-
-        RequestingUtils.RequestEnterWithExit("Insert enum:", typeof(ConsoleColor), out var value);
-
-        Console.WriteLine((ConsoleColor)value);
+        // RequestingUtils.RequestEnter<int>("Insert int value: ");
+        //
+        // RequestingUtils.RequestEnterWithExit("Insert enum:", typeof(ConsoleColor), out var value);
+        //
+        // Console.WriteLine((ConsoleColor)value);
         //RequestingUtils.RequestEnter<ConsoleColor>("Insert enum value: ");
+        
+        RequestingUtils.RequestEnterRange<int>("insert data in range 0-5", 0, 5);
     }
 }
 
