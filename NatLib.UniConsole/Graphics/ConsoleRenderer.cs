@@ -2,8 +2,16 @@ namespace NatLib.UniConsole.Graphics;
 
 public static class ConsoleRenderer
 {
+    private static (int Left, int Top) _checkpointLocation = new();
+    
     public static readonly RenderingStyleConfiguration Configuration 
         = new RenderingStyleConfiguration();
+
+    public static void SetCheckpoint() => _checkpointLocation = Console.GetCursorPosition();
+    
+    public static void GotoCheckpoint() => Console.SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
+
+    public static void Clear() => Console.Clear();
     
     public static void SetConsoleSizeAscii(int cols, int rows) =>
         Console.Write($"\e[8;{rows};{cols}t");
