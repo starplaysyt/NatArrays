@@ -58,6 +58,8 @@ public class Program
         // Console.WriteLine((ConsoleColor)value);
         //RequestingUtils.RequestEnter<ConsoleColor>("Insert enum value: ");
         
+        Console.WriteLine("Hello World!");
+        
         RequestingUtils.RequestEnterRange<int>("insert data in range 0-5", 0, 5);
     }
 }

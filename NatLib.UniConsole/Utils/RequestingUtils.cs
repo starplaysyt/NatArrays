@@ -49,10 +49,13 @@ public static class RequestingUtils
     public static T RequestEnter<T>(string message) where T : IParsable<T>
     {
         var gotValue = default(T);
+        
+        ConsoleRenderer.SetCheckpoint();
 
         DelegateUtils.ValidateCycle(
             () =>
             {
+                ConsoleRenderer.GotoCheckpoint();
                 ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
@@ -76,10 +79,13 @@ public static class RequestingUtils
     public static T RequestEnterRange<T>(string message, T min, T max) where T : IParsable<T>, IComparable<T>
     {
         var gotValue = default(T);
+        
+        ConsoleRenderer.SetCheckpoint();
 
         DelegateUtils.ValidateCycle(
             () =>
             {
+                ConsoleRenderer.GotoCheckpoint();
                 ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
@@ -108,10 +114,12 @@ public static class RequestingUtils
         where T : IParsable<T>, IComparable<T>
     {
         var gotValue = default(T);
+        ConsoleRenderer.SetCheckpoint();
 
         var result = DelegateUtils.ValidateCycleWithExit(
             () =>
             {
+                ConsoleRenderer.GotoCheckpoint();
                 ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
@@ -141,10 +149,12 @@ public static class RequestingUtils
     public static bool RequestEnterRangeWithExit<T>(string message, out T? value) where T : IParsable<T>
     {
         var gotValue = default(T);
+        ConsoleRenderer.SetCheckpoint();
 
         var result = DelegateUtils.ValidateCycleWithExit(
             () =>
             {
+                ConsoleRenderer.GotoCheckpoint();
                 ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
@@ -172,10 +182,12 @@ public static class RequestingUtils
     public static bool RequestEnterWithExit(string message, Type type, out object? value)
     {
         object? gotValue = null;
+        ConsoleRenderer.SetCheckpoint();
 
         var result = DelegateUtils.ValidateCycleWithExit(
             () =>
             {
+                ConsoleRenderer.GotoCheckpoint();
                 ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(type);
             },
