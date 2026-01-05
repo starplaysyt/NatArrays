@@ -8,8 +8,30 @@ public static class ConsoleRenderer
         = new RenderingStyleConfiguration();
 
     public static void SetCheckpoint() => _checkpointLocation = Console.GetCursorPosition();
-    
-    public static void GotoCheckpoint() => Console.SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
+
+    public static void GotoCheckpoint(bool clear = true)
+    {
+        if (clear)
+        {
+            var gotoPosition = Console.GetCursorPosition();
+            
+            Console.SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
+            
+            var offsetY = Math.Abs(gotoPosition.Top - _checkpointLocation.Top);
+            
+            for (var i = 0; i < offsetY; i++)
+            {
+                for (var j = 0; j < Console.BufferWidth; j++)
+                {
+                    Console.Write(' ');
+                }
+                Console.WriteLine();
+            }
+        }
+
+        Console.SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
+    }
+
 
     public static void Clear() => Console.Clear();
     
