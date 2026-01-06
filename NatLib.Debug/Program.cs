@@ -60,7 +60,7 @@ public class Program
         
         Console.WriteLine("Hello World!");
         
-        RequestingUtils.RequestEnterRange<int>("insert data in range 0-5", 0, 5);
+        RequestingUtils.RequestEnterRange<int>(0, 5);
     }
 }
 

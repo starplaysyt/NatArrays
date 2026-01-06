@@ -46,7 +46,7 @@ public static class RequestingUtils
     /// <summary>
     /// Performs continuous requestion T value from reading user input.
     /// </summary>
-    public static T RequestEnter<T>(string message) where T : IParsable<T>
+    public static T RequestEnter<T>() where T : IParsable<T>
     {
         var gotValue = default(T);
         
@@ -56,7 +56,6 @@ public static class RequestingUtils
             () =>
             {
                 ConsoleRenderer.GotoCheckpoint();
-                ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
             () =>
@@ -76,7 +75,7 @@ public static class RequestingUtils
         return gotValue;
     }
 
-    public static T RequestEnterRange<T>(string message, T min, T max) where T : IParsable<T>, IComparable<T>
+    public static T RequestEnterRange<T>(T min, T max) where T : IParsable<T>, IComparable<T>
     {
         var gotValue = default(T);
         
@@ -86,7 +85,6 @@ public static class RequestingUtils
             () =>
             {
                 ConsoleRenderer.GotoCheckpoint();
-                ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
             () =>
@@ -110,7 +108,7 @@ public static class RequestingUtils
         return gotValue;
     }
 
-    public static bool RequestEnterWithExit<T>(string message, out T? value, T min, T max)
+    public static bool RequestEnterWithExit<T>(out T? value, T min, T max)
         where T : IParsable<T>, IComparable<T>
     {
         var gotValue = default(T);
@@ -120,7 +118,6 @@ public static class RequestingUtils
             () =>
             {
                 ConsoleRenderer.GotoCheckpoint();
-                ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
             () =>
@@ -146,7 +143,7 @@ public static class RequestingUtils
         return result;
     }
 
-    public static bool RequestEnterRangeWithExit<T>(string message, out T? value) where T : IParsable<T>
+    public static bool RequestEnterRangeWithExit<T>(out T? value) where T : IParsable<T>
     {
         var gotValue = default(T);
         ConsoleRenderer.SetCheckpoint();
@@ -155,7 +152,6 @@ public static class RequestingUtils
             () =>
             {
                 ConsoleRenderer.GotoCheckpoint();
-                ConsoleRenderer.ShowMessageBox(message);
                 ShowEnumReference(typeof(T));
             },
             () =>
