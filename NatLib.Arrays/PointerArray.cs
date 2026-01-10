@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NatLib.Arrays;
@@ -34,7 +33,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// <exception cref="IndexOutOfRangeException"> Throws when index is out of range of array.</exception>
     public T this[int i] { get { unsafe {
         if (!IsAllocated) throw new InvalidOperationException("Array is not allocated.");
-        if (i < 0 && i >= Length) throw new IndexOutOfRangeException($"Index {i} is out of range {Length}.");
+        if (i < 0 || i >= Length) throw new IndexOutOfRangeException($"Index {i} is out of range {Length}.");
         
         return Pointer[i];
     } } }
