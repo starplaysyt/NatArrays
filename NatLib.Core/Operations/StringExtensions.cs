@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using NatLib.Core.Enums;
 
@@ -166,5 +167,17 @@ public static class StringExtensions
             (arr, lengths, separator, alignment), 
             WrapJoinSpan);
     }
+    #endregion
+    
+    #region Reflection To Array
+
+    public static string[] GetProperties(object obj, PropertyInfo[] properties)
+    {
+        var retArray = new string[properties.Length];
+        for (var i = 0; i < properties.Length; i++)
+            retArray[i] = (properties[i].GetValue(obj) ?? "Error").ToString() ?? "Error";
+        return retArray;
+    }
+    
     #endregion
 }
