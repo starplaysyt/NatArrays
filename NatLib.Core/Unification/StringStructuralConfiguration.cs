@@ -1,8 +1,8 @@
-namespace NatLib.UniConsole.Graphics;
+namespace NatLib.Core.Unification;
 
-public class RenderingStyleConfiguration
+public class StringStructuralConfiguration
 {
-    public static readonly RenderingStyleConfiguration Instance = new();
+    public static readonly StringStructuralConfiguration Instance = new();
     
     public char CornerTopLeft = '╔';
     public char CornerTopRight = '╗';
@@ -22,9 +22,4 @@ public class RenderingStyleConfiguration
     public char EmptyBlock = ' ';
 
     public int PreferableWidth = 70;
-
-    public RenderingStyleConfiguration()
-    {
-        
-    }
 }

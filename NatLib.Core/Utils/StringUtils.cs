@@ -2,9 +2,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using NatLib.Core.Enums;
 
-namespace NatLib.Core.Operations;
+namespace NatLib.Core.Utils;
 
-public static class StringExtensions
+public static class StringUtils
 {
     #region Fix Span Methods
     private static void FixSpan(Span<char> dst, (string Source, char Character) state)
