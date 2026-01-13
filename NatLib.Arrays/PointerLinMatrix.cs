@@ -5,7 +5,7 @@ namespace NatLib.Arrays;
 
 public sealed class PointerLinMatrix<T> : IDisposable where T : unmanaged
 {
-    //TODO: Remove ref from [] getter, make for getting by-ref separated method.
+    // TODO: Remove ref from [] getter, make for getting by-ref separated method.
     // Reference:
     // when T < 16 bytes - faster to use object copies,
     // when 16 < T < 32 bytes - object copies and refs performance equal,
