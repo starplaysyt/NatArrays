@@ -1,7 +1,6 @@
-using System;
-using NatLib.Arrays;
-using NatLib.Tests;
-using Xunit;
+using NatLIb.GL.Structures;
+
+namespace NatLib.Tests;
 
 public class Mat4Vec4Tests
 {

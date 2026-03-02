@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace NatLib.Arrays;
+namespace NatLIb.GL.Structures;
 
 /// <summary>
 /// Represents a 4x4 floating-point matrix stored in column-major order.
@@ -157,5 +157,15 @@ public struct Mat4F : IEquatable<Mat4F>
         }
         
         return resolvedHash;
+    }
+
+    public static bool operator ==(Mat4F left, Mat4F right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Mat4F left, Mat4F right)
+    {
+        return !(left == right);
     }
 }

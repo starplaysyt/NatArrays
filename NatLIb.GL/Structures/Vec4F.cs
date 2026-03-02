@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace NatLib.Arrays;
+namespace NatLIb.GL.Structures;
 
 /// <summary>
 /// Represents a floating-point vector with 4 values.
@@ -56,4 +54,14 @@ public struct Vec4F : IEquatable<Vec4F>
 
     public override int GetHashCode() => 
         HashCode.Combine(X, Y, Z, W);
+
+    public static bool operator ==(Vec4F left, Vec4F right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Vec4F left, Vec4F right)
+    {
+        return !(left == right);
+    }
 }
