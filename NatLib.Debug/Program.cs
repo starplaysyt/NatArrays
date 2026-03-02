@@ -1,4 +1,5 @@
-﻿using NatLib.Arrays;
+﻿using System.ComponentModel;
+using NatLib.Arrays;
 using NatLib.Core.Enums;
 using NatLib.Core.Operations;
 using NatLib.Core.Utils;
@@ -69,32 +70,32 @@ public class Program
         // Console.WriteLine((ConsoleColor)value);
         //RequestingUtils.RequestEnter<ConsoleColor>("Insert enum value: ");
 
-        // var callers = new List<PhoneCaller>
-        // {
-        //     new() { Phone = "+1-202-555-0101", Count = 5,  Name = "Alice Johnson",     Color = ConsoleColor.Cyan },
-        //     new() { Phone = "+1-202-555-0102", Count = 12, Name = "Bob Smith",         Color = ConsoleColor.Yellow },
-        //     new() { Phone = "+1-202-555-0103", Count = 3,  Name = "Charlie Brown",     Color = ConsoleColor.Green },
-        //     new() { Phone = "+1-202-555-0104", Count = 7,  Name = "Diana Prince",      Color = ConsoleColor.Magenta },
-        //     new() { Phone = "+1-202-555-0105", Count = 18, Name = "Edward Wilson",     Color = ConsoleColor.Blue },
-        //     new() { Phone = "+1-202-555-0106", Count = 1,  Name = "Fiona Gallagher",   Color = ConsoleColor.Red },
-        //     new() { Phone = "+1-202-555-0107", Count = 9,  Name = "George Miller",     Color = ConsoleColor.Gray },
-        //     new() { Phone = "+1-202-555-0108", Count = 14, Name = "Hannah Davis",      Color = ConsoleColor.DarkYellow },
-        //     new() { Phone = "+1-202-555-0109", Count = 2,  Name = "Ian Thompson",      Color = ConsoleColor.DarkCyan },
-        //     new() { Phone = "+1-202-555-0110", Count = 11, Name = "Julia Roberts",     Color = ConsoleColor.DarkGreen },
+        var callers = new List<PhoneCaller>
+        {
+            new() { Phone = "+1-202-555-0101", Count = 5,  Name = "Alice Johnson",     Color = ConsoleColor.Cyan },
+            new() { Phone = "+1-202-555-0102", Count = 12, Name = "Bob Smith",         Color = ConsoleColor.Yellow },
+            new() { Phone = "+1-202-555-0103", Count = 3,  Name = "Charlie Brown",     Color = ConsoleColor.Green },
+            new() { Phone = "+1-202-555-0104", Count = 7,  Name = "Diana Prince",      Color = ConsoleColor.Magenta },
+            new() { Phone = "+1-202-555-0105", Count = 18, Name = "Edward Wilson",     Color = ConsoleColor.Blue },
+            new() { Phone = "+1-202-555-0106", Count = 1,  Name = "Fiona Gallagher",   Color = ConsoleColor.Red },
+            new() { Phone = "+1-202-555-0107", Count = 9,  Name = "George Miller",     Color = ConsoleColor.Gray },
+            new() { Phone = "+1-202-555-0108", Count = 14, Name = "Hannah Davis",      Color = ConsoleColor.DarkYellow },
+            new() { Phone = "+1-202-555-0109", Count = 2,  Name = "Ian Thompson",      Color = ConsoleColor.DarkCyan },
+            new() { Phone = "+1-202-555-0110", Count = 11, Name = "Julia Roberts",     Color = ConsoleColor.DarkGreen },
+        
+            new() { Phone = "+1-202-555-0111", Count = 4,  Name = "Kevin Anderson",    Color = ConsoleColor.White },
+            new() { Phone = "+1-202-555-0112", Count = 6,  Name = "Laura Martinez",    Color = ConsoleColor.DarkMagenta },
+            new() { Phone = "+1-202-555-0113", Count = 10, Name = "Michael Scott",     Color = ConsoleColor.DarkGray },
+            new() { Phone = "+1-202-555-0114", Count = 8,  Name = "Natalie Portman",   Color = ConsoleColor.DarkBlue },
+            new() { Phone = "+1-202-555-0115", Count = 20, Name = "Oliver Stone",      Color = ConsoleColor.Yellow },
+            new() { Phone = "+1-202-555-0116", Count = 13, Name = "Paula Walker",      Color = ConsoleColor.Green },
+            new() { Phone = "+1-202-555-0117", Count = 16, Name = "Quentin Blake",     Color = ConsoleColor.Cyan },
+            new() { Phone = "+1-202-555-0118", Count = 15, Name = "Rachel Adams",      Color = ConsoleColor.Blue },
+            new() { Phone = "+1-202-555-0119", Count = 19, Name = "Steven King",       Color = ConsoleColor.Red },
+            new() { Phone = "+1-202-555-0120", Count = 17, Name = "Tina Turner",       Color = ConsoleColor.Magenta }
+        };
         //
-        //     new() { Phone = "+1-202-555-0111", Count = 4,  Name = "Kevin Anderson",    Color = ConsoleColor.White },
-        //     new() { Phone = "+1-202-555-0112", Count = 6,  Name = "Laura Martinez",    Color = ConsoleColor.DarkMagenta },
-        //     new() { Phone = "+1-202-555-0113", Count = 10, Name = "Michael Scott",     Color = ConsoleColor.DarkGray },
-        //     new() { Phone = "+1-202-555-0114", Count = 8,  Name = "Natalie Portman",   Color = ConsoleColor.DarkBlue },
-        //     new() { Phone = "+1-202-555-0115", Count = 20, Name = "Oliver Stone",      Color = ConsoleColor.Yellow },
-        //     new() { Phone = "+1-202-555-0116", Count = 13, Name = "Paula Walker",      Color = ConsoleColor.Green },
-        //     new() { Phone = "+1-202-555-0117", Count = 16, Name = "Quentin Blake",     Color = ConsoleColor.Cyan },
-        //     new() { Phone = "+1-202-555-0118", Count = 15, Name = "Rachel Adams",      Color = ConsoleColor.Blue },
-        //     new() { Phone = "+1-202-555-0119", Count = 19, Name = "Steven King",       Color = ConsoleColor.Red },
-        //     new() { Phone = "+1-202-555-0120", Count = 17, Name = "Tina Turner",       Color = ConsoleColor.Magenta }
-        // };
-        //
-        // var result = CollectionTableBuilder.BuildTable<PhoneCaller>(callers);
+        // var result = CollectionTablePresenter.BuildTable<PhoneCaller>(callers);
         //
         // Console.WriteLine(result);
         
@@ -120,34 +121,59 @@ public class Program
         //
         // Console.WriteLine(mat4.ToString());
         
-        var mat1 = new Mat4F();
-        mat1[0, 0] = 1;
-        mat1[1, 1] = 2;
-        mat1[2, 2] = 3;
-        mat1[3, 3] = 4;
-        
-        var mat2 = new Mat4F();
-        mat2[0, 0] = 1;
-        mat2[1, 1] = 2;
-        mat2[2, 2] = 3;
-        mat2[3, 3] = 4;
-        
-        var mat3 = new Mat4F();
-        mat3[0, 0] = 1;
-        mat3[1, 1] = 2;
-        mat3[2, 2] = 3;
-        
-        var mat4 = new Mat4F();
+        // var mat1 = new Mat4F();
+        // mat1[0, 0] = 1;
+        // mat1[1, 1] = 2;
+        // mat1[2, 2] = 3;
+        // mat1[3, 3] = 4;
+        //
+        // var mat2 = new Mat4F();
+        // mat2[0, 0] = 1;
+        // mat2[1, 1] = 2;
+        // mat2[2, 2] = 3;
+        // mat2[3, 3] = 4;
+        //
+        // var mat3 = new Mat4F();
+        // mat3[0, 0] = 1;
+        // mat3[1, 1] = 2;
+        // mat3[2, 2] = 3;
+        //
+        // var mat4 = new Mat4F();
+        //
+        // var fillArr = new float[16];
+        // Array.Fill(fillArr, 0);
+        // var mat5 = new Mat4F(fillArr);
+        //
+        // Console.WriteLine($"Result: {mat1.Equals(mat2)}");
+        // Console.WriteLine($"Result: {mat2.Equals(mat1)}");
+        //
+        // Console.WriteLine($"Result: {mat3.Equals(mat1)}");
+        // Console.WriteLine($"Result: {mat1.Equals(mat3)}");
 
-        var fillArr = new float[16];
-        Array.Fill(fillArr, 0);
-        var mat5 = new Mat4F(fillArr);
+        var callersBinding = new BindingList<PhoneCaller>(callers);
 
-        Console.WriteLine($"Result: {mat1.Equals(mat2)}");
-        Console.WriteLine($"Result: {mat2.Equals(mat1)}");
+        Console.ReadKey();
 
-        Console.WriteLine($"Result: {mat3.Equals(mat1)}");
-        Console.WriteLine($"Result: {mat1.Equals(mat3)}");
+        var callersTable = new CollectionTablePresenter<PhoneCaller>(callersBinding)
+        {
+            ShowNumbers = true
+        };
+
+        var result = callersTable.BuildTable();
+
+        Console.WriteLine(result);
+        
+        callersTable.Invalidate();
+        Console.WriteLine(callersTable.BuildTable());
+        Console.ReadKey();
+
+        int[] lengths = [2, 15, 5, 15, 11];
+        string[] strs = ["str1", "str2", "str2", "str2", "str2"];
+
+        Console.WriteLine(StringUtils.WrapJoin(strs, lengths, '|'));
+        Console.WriteLine(StringUtils.GenerateJoin('[', ']', '-', '|', lengths));
+            
+        Console.ReadKey();
     }
 }
 
