@@ -1,7 +1,8 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace NatLIb.GL.Structures;
+namespace NatLib.GL.Structures;
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
 public struct Vec2F : IEquatable<Vec2F>
