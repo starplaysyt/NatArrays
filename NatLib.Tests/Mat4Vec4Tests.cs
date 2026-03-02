@@ -1,4 +1,4 @@
-using NatLIb.GL.Structures;
+using NatLib.GL.Structures;
 
 namespace NatLib.Tests;
 

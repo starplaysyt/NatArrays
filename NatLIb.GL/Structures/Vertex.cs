@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace NatLIb.GL.Structures;
+namespace NatLib.GL.Structures;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Vertex

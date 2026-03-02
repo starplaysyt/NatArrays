@@ -1,6 +1,7 @@
+using System;
 using System.Runtime.InteropServices;
 
-namespace NatLIb.GL.Structures;
+namespace NatLib.GL.Structures;
 
 /// <summary>
 /// Represents a 4x4 floating-point matrix stored in column-major order.

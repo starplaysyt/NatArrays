@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace NatLIb.GL.Structures;
+namespace NatLib.GL.Structures;
 
 /// <summary>
 /// Represents a floating-point vector with 4 values.
