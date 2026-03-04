@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using NatLib.Arrays;
 using NatLib.Core.Enums;
-using NatLib.Core.Operations;
 using NatLib.Core.Utils;
 using NatLib.UniConsole.Utils;
 
