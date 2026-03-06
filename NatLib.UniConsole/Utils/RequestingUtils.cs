@@ -46,9 +46,9 @@ public static class RequestingUtils
     /// <summary>
     /// Performs continuous requestion T value from reading user input.
     /// </summary>
-    public static T RequestEnter<T>() where T : IParsable<T>
+    public static T RequestEnter<T>() where T : IParsable<T>, new()
     {
-        var gotValue = default(T);
+        var gotValue = new T();
         
         ConsoleRenderer.SetCheckpoint();
 
@@ -75,9 +75,9 @@ public static class RequestingUtils
         return gotValue;
     }
 
-    public static T RequestEnterRange<T>(T min, T max) where T : IParsable<T>, IComparable<T>
+    public static T RequestEnterRange<T>(T min, T max) where T : IParsable<T>, IComparable<T>, new()
     {
-        var gotValue = default(T);
+        var gotValue = new T();
         
         ConsoleRenderer.SetCheckpoint();
 
