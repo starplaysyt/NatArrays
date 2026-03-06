@@ -22,4 +22,13 @@ public class StringStructuralConfiguration
     public char EmptyBlock = ' ';
 
     public int PreferableWidth = 70;
+
+    public (char Left, char Center, char Right, int Width) DeconstructTop()
+        => (CornerTopLeft, HorizontalLine, CornerTopRight, PreferableWidth);
+    
+    public (char Left, char Center, char Right, int Width) DeconstructBottom()
+        => (CornerBottomLeft, HorizontalLine, CornerBottomRight, PreferableWidth);
+    
+    public (char Left, char Center, char Right, int Width) DeconstructMiddle()
+        => (VerticalLine, EmptyBlock, VerticalLine, PreferableWidth);
 }
