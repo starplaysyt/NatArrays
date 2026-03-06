@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using NatLib.Arrays;
 using NatLib.Core.Enums;
 using NatLib.Core.Utils;
+using NatLib.UniConsole.Graphics;
 using NatLib.UniConsole.Utils;
 
 namespace NatLib.Debug;
@@ -149,30 +151,43 @@ public class Program
         // Console.WriteLine($"Result: {mat3.Equals(mat1)}");
         // Console.WriteLine($"Result: {mat1.Equals(mat3)}");
 
-        var callersBinding = new BindingList<PhoneCaller>(callers);
-
-        Console.ReadKey();
-
-        var callersTable = new CollectionTablePresenter<PhoneCaller>(callersBinding)
-        {
-            ShowNumbers = true
-        };
-
-        var result = callersTable.BuildTable();
-
-        Console.WriteLine(result);
+        // var callersBinding = new BindingList<PhoneCaller>(callers);
+        //
+        // Console.ReadKey();
+        //
+        // var callersTable = new CollectionTablePresenter<PhoneCaller>(callersBinding)
+        // {
+        //     ShowNumbers = true
+        // };
+        //
+        // var result = callersTable.BuildTable();
+        //
+        // Console.WriteLine(result);
+        //
+        // callersTable.Invalidate();
+        // Console.WriteLine(callersTable.BuildTable());
+        // Console.ReadKey();
+        //
+        // int[] lengths = [2, 15, 5, 15, 11];
+        // string[] strs = ["str1", "str2", "str2", "str2", "str2"];
+        //
+        // Console.WriteLine(StringUtils.WrapJoin(strs, lengths, '|'));
+        // Console.WriteLine(StringUtils.GenerateJoin('[', ']', '-', '|', lengths));
+        //     
+        // Console.ReadKey();
         
-        callersTable.Invalidate();
-        Console.WriteLine(callersTable.BuildTable());
-        Console.ReadKey();
+        Stopwatch watch = Stopwatch.StartNew();
 
-        int[] lengths = [2, 15, 5, 15, 11];
-        string[] strs = ["str1", "str2", "str2", "str2", "str2"];
+        for (int i = 0; i < 100000; i++)
+        {
+            ConsoleRenderer.WriteFixedStringNext("string", 7, '=');
+            //ConsoleRenderer.WriteTopBorder();
+            //ConsoleRenderer.WriteMessageInBounds("testMessage");
+        }
+        Console.WriteLine();
+        watch.Stop();
+        Console.WriteLine(watch.ElapsedMilliseconds);
 
-        Console.WriteLine(StringUtils.WrapJoin(strs, lengths, '|'));
-        Console.WriteLine(StringUtils.GenerateJoin('[', ']', '-', '|', lengths));
-            
-        Console.ReadKey();
     }
 }
 
