@@ -7,6 +7,7 @@ public static class ConsoleRenderer
     private static (int Left, int Top) _checkpointLocation = new();
 
     public static readonly StringStructuralConfiguration Configuration = new();
+    
     private static TextWriter Writer => Console.Out;
     
     private static ConsoleColorExt _currentForeground = ConsoleColorExt.Default;
@@ -25,6 +26,9 @@ public static class ConsoleRenderer
         Writer.Write("\e[{0}m", colorCode+40);
         _currentBackground = colorCode;
     }
+
+    public static void ResetForeground() => SetForeground(ConsoleColorExt.Default);
+    public static void ResetBackground() => SetBackground(ConsoleColorExt.Default);
     
     public static void SetCursorPosition(int x, int y)
     {
@@ -67,12 +71,10 @@ public static class ConsoleRenderer
             fillChars.Fill(fillCharacter);
             
             for (var i = 0; i < offsetY; i++)
-            {
                 Writer.Write(fillCharacter);
-            }
         }
 
-        Console.SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
+        SetCursorPosition(_checkpointLocation.Left, _checkpointLocation.Top);
     }
 
     public static void WriteFixedStringNext(ReadOnlySpan<char> str, int width, char empty)
@@ -96,8 +98,8 @@ public static class ConsoleRenderer
         Span<char> chars = stackalloc char[width];
         
         chars[0] = left;
-        chars[1..(width - 2)].Fill(center);
-        chars[width - 1] = right;
+        chars[1..(width - 1)].Fill(center);
+        chars[width-1] = right;
         
         Writer.WriteLine(chars);
     }
@@ -105,46 +107,44 @@ public static class ConsoleRenderer
     public static void WriteMessageInBounds(ReadOnlySpan<char> message)
     {
         // INFO: Refactored to stack allocation method. +-3300ms -> 319ms (100_000 calls)
+
+        var (side, center, width) = Configuration.DeconstructMiddle();
+        Span<char> chars = stackalloc char[width];
         
-        var (left, center, right, width) = Configuration.DeconstructMiddle();
-        Span<char> chars = stackalloc char[width + 4];
-        
-        var strLen = Math.Min(message.Length, width);
-        chars[0] = left;
+        var strLen = Math.Min(message.Length, width - 4);
+        chars[0] = side;
         chars[1] = center;
         message[..strLen].CopyTo(chars[2..]);
-        chars.Slice(strLen + 2, width - strLen).Fill(center);
-        chars[^1] = right;
+        chars.Slice(strLen + 2, width - strLen - 2).Fill(center);
+        chars[^1] = side;
         
         Writer.WriteLine(chars);
     }
 
     public static void WriteSeparator()
     {
-        var conf = Configuration;
-        var writer = Console.Out;
+        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
         
-        writer.Write(conf.SectionTRight);
-        for (var i = 0; i < conf.PreferableWidth-2; i++)
-        {
-            writer.Write(conf.HorizontalLine);
-        }
-        writer.Write(conf.SectionTLeft);
-        writer.Write('\n');
+        var (left, center, right, width) = Configuration.DeconstructSeparator();
+        Span<char> chars = stackalloc char[width];
+        chars[0] = left;
+        chars[1..(width - 1)].Fill(center);
+        chars[width-1] = right;
+        
+        Writer.WriteLine(chars);
     }
 
     public static void WriteBottomBorder()
     {
-        var conf = Configuration;
-        var writer = Console.Out;
+        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
         
-        writer.Write(conf.CornerBottomLeft);
-        for (var i = 0; i < conf.PreferableWidth-2; i++)
-        {
-            writer.Write(conf.HorizontalLine);
-        }
-        writer.Write(conf.CornerBottomRight);
-        writer.Write('\n');
+        var (left, center, right, width) = Configuration.DeconstructBottom();
+        Span<char> chars = stackalloc char[width];
+        chars[0] = left;
+        chars[1..(width - 1)].Fill(center);
+        chars[width-1] = right;
+        
+        Writer.WriteLine(chars);
     }
     
     public static void ShowMenuItems(string title, IEnumerable<string> menuItems)

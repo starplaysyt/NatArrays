@@ -180,9 +180,15 @@ public class Program
 
         for (int i = 0; i < 100000; i++)
         {
-            ConsoleRenderer.WriteFixedStringNext("string", 7, '=');
+            //ConsoleRenderer.WriteFixedStringNext("string", 7, '=');
             //ConsoleRenderer.WriteTopBorder();
             //ConsoleRenderer.WriteMessageInBounds("testMessage");
+            
+            // ConsoleRenderer.WriteTopBorder();
+            // ConsoleRenderer.WriteMessageInBounds("testMessage");
+            // ConsoleRenderer.WriteSeparator();
+            // ConsoleRenderer.WriteMessageInBounds("akjsjkdbjabskbdkjbjkabsjkbdjkbakjsbdjkbjkabsjkbdjkbaskjbdjbjakbsdjkbjkabskd");
+            ConsoleRenderer.WriteBottomBorder();
         }
         Console.WriteLine();
         watch.Stop();
