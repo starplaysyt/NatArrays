@@ -187,4 +187,11 @@ public static class ConsoleRenderer
             WriteMessageInBounds(line);
         WriteBottomBorder();
     }
+    
+    public static void WriteLine() => Writer.WriteLine();
+    
+    public static void Write(ReadOnlySpan<char> str) => Writer.Write(str);
+    public static void WriteLine(ReadOnlySpan<char> str) => Writer.WriteLine(str);
+    public static void Write(char ch) => Writer.Write(ch);
+    public static void WriteLine(char ch) => Writer.WriteLine(ch);
 }
