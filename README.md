@@ -1,31 +1,11 @@
-# NatLib — idk what exactly it is for C#
+# NatLib 
 
-That is a benchmark test for struct operations. Only for Unit2 and composers of Unit2. Why I placed it here? 'Cos I want to see on what i wasted all day!
+![Status](https://img.shields.io/badge/status-WIP-yellow)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue)
+![DotNet](https://img.shields.io/badge/.NET-10.0-purple)
+![License](https://img.shields.io/badge/license-MIT%20with%20Attribution-green)
 
-Oh, you just need to look on `Mean` column and divide it on 1.000.000+- to get time for one operation.
-
-| Method                      | Mean       | Error   | StdDev  | Allocated |
-|---------------------------- |-----------:|--------:|--------:|----------:|
-| Unit2_ReadProperty          |   216.5 us | 0.27 us | 0.21 us |         - |
-| Unit2_WriteProperty         |   216.4 us | 0.16 us | 0.15 us |         - |
-| ComposedUnit2_ReadProperty  |   216.3 us | 0.07 us | 0.06 us |         - |
-| ComposedUnit2_WriteProperty |   216.4 us | 0.09 us | 0.08 us |         - |
-| Unit2_Create                | 1,297.5 us | 0.30 us | 0.28 us |         - |
-| Composed_Create             | 1,297.3 us | 0.34 us | 0.32 us |         - |
-| Unit2ToComposed             | 1,081.1 us | 0.32 us | 0.27 us |         - |
-| ComposedToUnit2             | 1,081.2 us | 0.25 us | 0.23 us |         - |
-| Unit2_ObjectArithmetic      | 1,081.3 us | 0.39 us | 0.34 us |         - |
-| Composed_ObjectArithmetic   | 1,081.3 us | 0.43 us | 0.41 us |         - |
-| Unit2_TArithmetic           | 1,303.0 us | 6.53 us | 6.11 us |         - |
-| Composed_TArithmetic        | 1,302.4 us | 3.95 us | 3.50 us |         - |
-| Unit2_IEquatable            |   542.1 us | 0.82 us | 0.64 us |         - |
-| Composed_IEquatable         |   541.7 us | 0.37 us | 0.33 us |         - |
-| Unit2_Equals                |   657.0 us | 3.65 us | 3.41 us |         - |
-| Composed_Equals             |   651.1 us | 1.28 us | 1.14 us |         - |
-| Unit2_Existing              | 2,591.8 us | 0.78 us | 0.65 us |         - |
-| Composed_Existing           | 2,591.6 us | 0.39 us | 0.37 us |         - |
-
-Currently unused stuff:
+**NatLib** is an utility library. And a part of it -
 
 A **high-performance, unmanaged array** implementation for C# that allows direct control over memory allocation, reallocation, and deallocation using `NativeMemory`.  
 Designed for systems programming, game engines, and any low-level environment where performance and control matter more than safety.
