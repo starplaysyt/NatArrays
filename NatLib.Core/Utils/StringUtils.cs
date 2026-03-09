@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using NatLib.Core.Enums;
 
@@ -13,13 +14,13 @@ public static class StringUtils
         {
             case Alignment.Begin:
                 FixSpanLeft(dst, state);
-                break;
+                return;
             case Alignment.Center:
                 FixSpanCenter(dst, state);
-                break;
+                return;
             case Alignment.End:
                 FixSpanRight(dst, state);
-                break;
+                return;
             default:
                 return;
         }
@@ -281,6 +282,19 @@ public static class StringUtils
         for (var i = 0; i < properties.Length; i++)
             retArray[i] = (properties[i].GetValue(obj) ?? "Error").ToString() ?? "Error";
         return retArray;
+    }
+    
+    #endregion
+    
+    #region Formatters
+
+    public static int TryFormat<T>(T obj, Span<char> destination, [StringSyntax("StringFormat")] string format) where T : ISpanFormattable
+        => obj.TryFormat(destination, out var charsWritten, format, null) ? charsWritten : -1;
+
+    public static int TryCopy(string obj, Span<char> destination)
+    { 
+        obj.TryCopyTo(destination);
+        return Math.Min(obj.Length, destination.Length);
     }
     
     #endregion
