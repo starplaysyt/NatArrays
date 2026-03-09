@@ -35,19 +35,10 @@ public static class ConvertingUtils
         // enum
         if (targetType.IsEnum)
         {
-            // if (long.TryParse(input, out var n))
-            // {
-            //     value = Enum.ToObject(targetType, n);
-            //     return true;
-            // }
-
-            if (Enum.TryParse(targetType, input, ignoreCase: true, out var ev))
-            {
-                value = ev;
-                return true;
-            }
-
-            return false;
+            if (!Enum.TryParse(targetType, input, ignoreCase: true, out var ev)) return false;
+            
+            value = ev;
+            return true;
         }
 
         try

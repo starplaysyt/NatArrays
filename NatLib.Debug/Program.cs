@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 using NatLib.Arrays;
 using NatLib.Core.Enums;
 using NatLib.Core.Utils;
@@ -178,8 +180,8 @@ public class Program
         
         Stopwatch watch = Stopwatch.StartNew();
 
-        for (int i = 0; i < 100000; i++)
-        {
+        //for (int i = 0; i < 100000; i++)
+        //{
             //ConsoleRenderer.WriteFixedStringNext("string", 7, '=');
             //ConsoleRenderer.WriteTopBorder();
             //ConsoleRenderer.WriteMessageInBounds("testMessage");
@@ -188,12 +190,37 @@ public class Program
             // ConsoleRenderer.WriteMessageInBounds("testMessage");
             // ConsoleRenderer.WriteSeparator();
             // ConsoleRenderer.WriteMessageInBounds("akjsjkdbjabskbdkjbjkabsjkbdjkbakjsbdjkbjkabsjkbdjkbaskjbdjbjakbsdjkbjkabskd");
-            ConsoleRenderer.WriteBottomBorder();
-        }
+            //ConsoleRenderer.WriteBottomBorder();
+        //}
         Console.WriteLine();
         watch.Stop();
         Console.WriteLine(watch.ElapsedMilliseconds);
 
+        var str = "teststring";
+        Span<char> charspan = stackalloc char[45];
+        
+        int intval = 0;
+        float floatval = 10.3434f;
+        DateTime dt = DateTime.Now;
+        ConsoleColor enumval = ConsoleColor.Green;
+        int ptr = 0;
+
+        str.TryCopyTo(charspan);
+        ptr += str.Length;
+        
+        intval.TryFormat(charspan[ptr..], out var written, "0000");
+        ptr += written;
+
+        floatval.TryFormat(charspan[ptr..], out written, "F2");
+        ptr += written;
+        
+        dt.TryFormat(charspan[ptr..], out written, "yy-MM-dd");
+        ptr += written;
+        
+        Enum.TryFormat(enumval, charspan[ptr..], out written, "F");
+        
+        
+        Console.WriteLine(charspan);
     }
 }
 
