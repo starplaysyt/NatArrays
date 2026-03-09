@@ -178,7 +178,7 @@ public class Program
         //     
         // Console.ReadKey();
         
-        Stopwatch watch = Stopwatch.StartNew();
+        // Stopwatch watch = Stopwatch.StartNew();
 
         //for (int i = 0; i < 100000; i++)
         //{
@@ -192,35 +192,48 @@ public class Program
             // ConsoleRenderer.WriteMessageInBounds("akjsjkdbjabskbdkjbjkabsjkbdjkbakjsbdjkbjkabsjkbdjkbaskjbdjbjakbsdjkbjkabskd");
             //ConsoleRenderer.WriteBottomBorder();
         //}
-        Console.WriteLine();
-        watch.Stop();
-        Console.WriteLine(watch.ElapsedMilliseconds);
+        // Console.WriteLine();
+        // watch.Stop();
+        // Console.WriteLine(watch.ElapsedMilliseconds);
+        //
+        // var str = "teststring";
+        // Span<char> charspan = stackalloc char[45];
+        //
+        // int intval = 0;
+        // float floatval = 10.3434f;
+        // DateTime dt = DateTime.Now;
+        // ConsoleColor enumval = ConsoleColor.Green;
+        // int ptr = 0;
+        //
+        // str.TryCopyTo(charspan);
+        // ptr += str.Length;
+        //
+        // intval.TryFormat(charspan[ptr..], out var written, "0000");
+        // ptr += written;
+        //
+        // floatval.TryFormat(charspan[ptr..], out written, "F2");
+        // ptr += written;
+        //
+        // dt.TryFormat(charspan[ptr..], out written, "yy-MM-dd");
+        // ptr += written;
+        //
+        // Enum.TryFormat(enumval, charspan[ptr..], out written, "F");
+        //
+        //
+        // Console.WriteLine(charspan);
 
-        var str = "teststring";
-        Span<char> charspan = stackalloc char[45];
+        var defs = ReflectionUtils.GetPropertyInfos(typeof(PhoneCaller)).FirstOrDefault(i => i.Name == "Phone");
+        var delegGet = ReflectionUtils.GetPropertyGetterDelegate(defs);
+        var delegSet = ReflectionUtils.GetPropertySetterDelegate(defs);
         
-        int intval = 0;
-        float floatval = 10.3434f;
-        DateTime dt = DateTime.Now;
-        ConsoleColor enumval = ConsoleColor.Green;
-        int ptr = 0;
+        
+        var caller = new PhoneCaller() { Phone = "testPhone"};
 
-        str.TryCopyTo(charspan);
-        ptr += str.Length;
-        
-        intval.TryFormat(charspan[ptr..], out var written, "0000");
-        ptr += written;
+        delegSet.Invoke(caller, "+213123123123");
 
-        floatval.TryFormat(charspan[ptr..], out written, "F2");
-        ptr += written;
-        
-        dt.TryFormat(charspan[ptr..], out written, "yy-MM-dd");
-        ptr += written;
-        
-        Enum.TryFormat(enumval, charspan[ptr..], out written, "F");
-        
-        
-        Console.WriteLine(charspan);
+        var result = (string)delegGet.Invoke(caller) ?? "Error";
+
+        Console.WriteLine(result);
     }
 }
 
