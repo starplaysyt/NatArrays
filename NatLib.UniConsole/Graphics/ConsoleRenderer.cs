@@ -84,8 +84,10 @@ public static class ConsoleRenderer
         
         var strLen = Math.Min(str.Length, width);
         str[..strLen].CopyTo(chars);
-        // if (width > str.Length)
+        if (str.Length < width)
             chars[str.Length..width].Fill(empty);
+        else 
+            chars[^3..].Fill('.');
         
         Writer.Write(chars);
     }
@@ -112,10 +114,13 @@ public static class ConsoleRenderer
         Span<char> chars = stackalloc char[width];
         
         var strLen = Math.Min(message.Length, width - 4);
-        chars[0] = side;
-        chars[1] = center;
+
         message[..strLen].CopyTo(chars[2..]);
         chars.Slice(strLen + 2, width - strLen - 2).Fill(center);
+        if (message.Length > width - 4) chars[(width - 5)..^2].Fill('.');
+        
+        chars[0] = side;
+        chars[1] = center;
         chars[^1] = side;
         
         Writer.WriteLine(chars);
