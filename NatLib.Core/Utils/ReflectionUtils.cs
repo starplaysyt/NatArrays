@@ -26,6 +26,15 @@ public static class ReflectionUtils
         
         return result ?? throw new InvalidOperationException($"Could not find property by got predicate in {type.Name}.");
     }
+    
+    public static string[] GetPropertiesStringValues(object obj, PropertyInfo[] properties)
+    {
+        // TODO: Think about buffering it somehow, or implement direct getting
+        var retArray = new string[properties.Length];
+        for (var i = 0; i < properties.Length; i++)
+            retArray[i] = (properties[i].GetValue(obj) ?? "Error").ToString() ?? "Error";
+        return retArray;
+    }
 
     /// <summary>
     /// Compiles a delegate that references a lambda that calls a getter of a property.
@@ -122,5 +131,4 @@ public static class ReflectionUtils
     
     public static IEnumerable<string> GetPropertiesNames<T>(PropertyInfo[] properties) =>
         properties.Select(propertyInfo => propertyInfo.Name);
-    
 }
