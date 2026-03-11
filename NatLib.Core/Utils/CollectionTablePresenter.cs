@@ -72,7 +72,7 @@ public class CollectionTablePresenter<T> where T : class
                     Separator: configuration.VerticalLine,
                     Alignment: Alignment.Begin
                 ),
-            StringUtils.WrapJoinSpan
+            SpanCharUtils.WrapJoinSpan
             );
 
         var headerBottomDivider = StringUtils.GenerateJoin(
@@ -96,7 +96,7 @@ public class CollectionTablePresenter<T> where T : class
                         Separator: configuration.VerticalLine,
                         Alignment: Alignment.Begin
                     ),
-                    StringUtils.WrapJoinSpan);
+                    SpanCharUtils.WrapJoinSpan);
             }).ToArray();
         
         var footerDivider = StringUtils.GenerateJoin(
@@ -155,7 +155,7 @@ public class CollectionTablePresenter<T> where T : class
                     configuration.VerticalLine,
                     Alignment.Begin
                 ),
-            StringUtils.WrapJoinSpan
+            SpanCharUtils.WrapJoinSpan
             );
 
         var headerBottomDivider = StringUtils.GenerateJoin(
@@ -175,7 +175,7 @@ public class CollectionTablePresenter<T> where T : class
                     configuration.VerticalLine,
                     Alignment.Begin
                 ),
-                StringUtils.WrapJoinSpan)
+                SpanCharUtils.WrapJoinSpan)
             ).ToArray();
         
         var footerDivider = StringUtils.GenerateJoin(
