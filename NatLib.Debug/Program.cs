@@ -5,6 +5,7 @@ using System.Text;
 using NatLib.Arrays;
 using NatLib.Core.Enums;
 using NatLib.Core.Utils;
+using NatLib.UniConsole.Conversations;
 using NatLib.UniConsole.Graphics;
 using NatLib.UniConsole.Utils;
 
@@ -222,18 +223,22 @@ public class Program
         //
         // Console.WriteLine(charspan);
 
-        var defs = ReflectionUtils.GetPropertyInfos(typeof(PhoneCaller)).FirstOrDefault(i => i.Name == "Phone");
-        var delegGet = ReflectionUtils.GetPropertyGetterDelegate(defs);
-        var delegSet = ReflectionUtils.GetPropertySetterDelegate(defs);
+        // var defs = ReflectionUtils.GetPropertyInfos(typeof(PhoneCaller)).FirstOrDefault(i => i.Name == "Phone");
+        // var delegGet = ReflectionUtils.GetPropertyGetterDelegate(defs);
+        // var delegSet = ReflectionUtils.GetPropertySetterDelegate(defs);
+        //
+        //
+        // var caller = new PhoneCaller() { Phone = "testPhone"};
+        //
+        // delegSet.Invoke(caller, "+213123123123");
+        //
+        // var result = (string)delegGet.Invoke(caller) ?? "Error";
+        //
+        // Console.WriteLine(result);
+
+        var window = new ConsoleWindow();
         
-        
-        var caller = new PhoneCaller() { Phone = "testPhone"};
-
-        delegSet.Invoke(caller, "+213123123123");
-
-        var result = (string)delegGet.Invoke(caller) ?? "Error";
-
-        Console.WriteLine(result);
+        window.Start();
     }
 }
 
