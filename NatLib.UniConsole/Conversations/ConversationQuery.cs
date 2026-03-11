@@ -1,24 +1,28 @@
+using NatLib.UniConsole.Interfaces;
+
 namespace NatLib.UniConsole.Conversations;
 
-public class ConversationQuery
+public class ConversationQuery 
 {
-    private List<IQueryElement> _queries = [];
-    
-    // queries left on screen for info, might be added here after invoking Update
-    private List<IConversationQueryElement> _conversationQueries = [];
-    
-    private IQueryElement? _currentElement = null;
+    public Dictionary<string, IConversationElement> StaticElements { get; set; }
+    public IConversationElement RootElement { get; set; }
+    public IConversationElement CurrentElement { get; set; }
 
-
-    public void RenderState()
+    public ConversationQuery(
+        Dictionary<string, IConversationElement> staticElements,
+        IConversationElement rootElement)
     {
-        foreach (var conversationQuery in _conversationQueries)
-        {
-            conversationQuery.RenderState();
-        }
-        
-        _currentElement?.RenderState();
+        StaticElements = staticElements;
+        RootElement = rootElement;
     }
 
-    public bool Request(char request) => true;
+    public void Run()
+    {
+        foreach (var staticElement in StaticElements)
+        {
+            staticElement.Value.Start();
+        }
+        
+        RootElement.Start();
+    }
 }
