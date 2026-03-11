@@ -296,6 +296,14 @@ public static class StringUtils
         obj.TryCopyTo(destination);
         return Math.Min(obj.Length, destination.Length);
     }
+
+    public static int TryCopy(ReadOnlySpan<char> obj, Span<char> destination)
+    {
+        // FIXED: In special circumstances function may fail to put obj to destination
+        var length = Math.Min(obj.Length, destination.Length);
+        obj[..length].CopyTo(destination);
+        return length;
+    }
     
     #endregion
 }
