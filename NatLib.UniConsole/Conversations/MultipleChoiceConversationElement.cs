@@ -11,6 +11,11 @@ public class MultipleChoiceConversationElement : IConversationElement
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
 
+    public void Start(ConversationQuery? parent = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public MultipleChoiceConversationElement(
         List<(string Title, IConversationElement Conversation)> conversations)
     {
@@ -22,10 +27,5 @@ public class MultipleChoiceConversationElement : IConversationElement
             _titles[i] = conversations[i].Title;
             _conversations[i] = conversations[i].Conversation;
         }
-    }
-
-    public void Start()
-    {
-        throw new NotImplementedException();
     }
 }

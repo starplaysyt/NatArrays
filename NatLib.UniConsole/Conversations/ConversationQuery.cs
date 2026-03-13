@@ -6,7 +6,6 @@ public class ConversationQuery
 {
     public Dictionary<string, IConversationElement> StaticElements { get; set; }
     public IConversationElement RootElement { get; set; }
-    public IConversationElement CurrentElement { get; set; }
 
     public ConversationQuery(
         Dictionary<string, IConversationElement> staticElements,
@@ -20,7 +19,7 @@ public class ConversationQuery
     {
         foreach (var staticElement in StaticElements)
         {
-            staticElement.Value.Start();
+            staticElement.Value.Start(this);
         }
         
         RootElement.Start();

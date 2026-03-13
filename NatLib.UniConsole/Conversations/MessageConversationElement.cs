@@ -10,23 +10,23 @@ public class MessageConversationElement : IConversationElement
     public (int, int) CursorLocation { get; set; }
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
-    private string _message;
-    private bool _pressAnyKey; 
+    public MessageElementArgs RequestArgs { get; set; }
+
     public MessageConversationElement(MessageElementArgs requestArgs, IConversationElement? nextElement)
     {
-        _pressAnyKey = requestArgs.WaitForUserKey;
-        _message = requestArgs.Message;
+        RequestArgs = requestArgs;
         DistinctAfterUsage = requestArgs.DistinctAfterUsage;
         NextElement = nextElement;
     }
 
-    public void Start()
+    public void Start(ConversationQuery? parent = null)
     {
+        var reqArgs = RequestArgs;
         CursorLocation = ConsoleRenderer.GetCheckpoint();
         
         ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageInBounds(_message);
-        if (_pressAnyKey)
+        ConsoleRenderer.WriteMessageInBounds(reqArgs.Message);
+        if (reqArgs.WaitForUserKey)
         {
             ConsoleRenderer.WriteSeparator();
             ConsoleRenderer.WriteMessageInBounds("Press any key to continue...");
@@ -43,6 +43,7 @@ public class MessageConversationElement : IConversationElement
         
         NextElement?.Start();
         
-        ConsoleRenderer.GotoCheckpoint(CursorLocation);
+        if (reqArgs.ClearAtTheEnd)
+            ConsoleRenderer.GotoCheckpoint(CursorLocation);
     }
 }

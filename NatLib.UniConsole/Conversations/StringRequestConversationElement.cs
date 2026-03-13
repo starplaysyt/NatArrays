@@ -20,7 +20,7 @@ public class StringRequestConversationElement : IConversationElement
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
 
-    public void Start()
+    public void Start(ConversationQuery? parent = null)
     {
         throw new NotImplementedException();
     }
