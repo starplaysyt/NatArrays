@@ -106,12 +106,15 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// <param name="length"> New length of an array.</param>
     /// <param name="initMode"></param>
     /// <exception cref="ArgumentException"> Throws when got length is negative or zero.</exception>
-    /// <exception cref="InvalidOperationException"> Throws when an array is not allocated.</exception>
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode. </exception>
     public void Resize(int length, InitializationMode initMode = InitializationMode.Nothing)
     {
-        if (!IsAllocated) throw new InvalidOperationException("Array is not allocated."); // State checking first.
+        if (!IsAllocated)
+        {
+            Allocate(length, initMode);
+            return;
+        }
         if (length == Length) return; // When nothing changed - do nothing.
         if (length <= 0) throw new ArgumentException("Length must be positive.");
         
