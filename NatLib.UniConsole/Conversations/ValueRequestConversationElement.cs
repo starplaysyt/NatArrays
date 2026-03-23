@@ -4,24 +4,25 @@ using NatLib.UniConsole.Interfaces;
 
 namespace NatLib.UniConsole.Conversations;
 
-public class IntRequestConversationElement : IConversationElement
+public class ValueRequestConversationElement<T> : IConversationElement where T : IParsable<T>
 {
-    public (int, int) CursorLocation { get; set; }
+    public (int, int) EntryCursorLocation { get; set; }
     public IConversationElement? NextElement { get; set; }
-    public RequestElementArgs<int> RequestArgs { get; set; }
 
-    public IntRequestConversationElement(
-        RequestElementArgs<int> requestArgs,
-        IConversationElement? nextOperation)
+    public RequestElementArgs<T> RequestArgs { get; set; }
+
+    public ValueRequestConversationElement(
+        RequestElementArgs<T> requestArgs,
+        IConversationElement? nextElement = null)
     {
         RequestArgs = requestArgs;
-        NextElement = nextOperation;
+        NextElement = nextElement;
     }
-    
-    public void Start(ConversationQuery? parent = null)
+
+    public void Start()
     {
         var reqArgs = RequestArgs;
-        CursorLocation = ConsoleRenderer.GetCheckpoint();
+        EntryCursorLocation = ConsoleRenderer.GetCheckpoint();
         ConsoleRenderer.WriteTopBorder();
         ConsoleRenderer.WriteMessageInBounds(reqArgs.Message());
 
@@ -29,26 +30,24 @@ public class IntRequestConversationElement : IConversationElement
         {
             ConsoleRenderer.WriteSeparator();
             reqArgs.ReferencePresenter.PresentString();
-            ConsoleRenderer.WriteBottomBorder();
         }
         
         ConsoleRenderer.WriteBottomBorder();
         
         var insertCursorPosition = ConsoleRenderer.GetCheckpoint();
         string inputString;
-        int intInput;
-
+        
         GOTO_INPUT_STARTING:
         
         ConsoleRenderer.Write(">>> ");
         inputString = Console.ReadLine() ?? "";
         reqArgs.RawValueBinding?.Invoke(inputString);
-
-        if (int.TryParse(inputString, out intInput) 
-            && reqArgs.ValidationDelegate?.Invoke(intInput) != false)
+        
+        if (T.TryParse(inputString, null, out var inputParsed) 
+            && reqArgs.ValidationDelegate?.Invoke(inputParsed) != false)
         {
             reqArgs.InvocationStatusProvider?.Invoke(true);
-            reqArgs.ConvertedValueBinding?.Invoke(intInput);
+            reqArgs.ConvertedValueBinding?.Invoke(inputParsed);
         }
         else
         {
@@ -71,27 +70,24 @@ public class IntRequestConversationElement : IConversationElement
             reqArgs.InvocationStatusProvider?.Invoke(false);
             
             if (reqArgs.DistinctAfterQuit)
-                ConsoleRenderer.GotoCheckpoint(CursorLocation);
+                ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
             
             reqArgs.QuitElement?.Start();
             
-            // Okay, that means that QuitElement logically
-            // becomes a new execution branch, not a way to fix
-            // insertion problem, or let user try again. 
             if (reqArgs.QuitElementOverridesNextElement)
             {
                 if (reqArgs.ClearAtTheEnd)
-                    ConsoleRenderer.GotoCheckpoint(CursorLocation);
+                    ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
                 return;
             }
         }
         
         if (reqArgs.DistinctAfterUsage)
-            ConsoleRenderer.GotoCheckpoint(CursorLocation);
+            ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
         
         NextElement?.Start();
 
         if (reqArgs.ClearAtTheEnd) 
-            ConsoleRenderer.GotoCheckpoint(CursorLocation);
+            ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
     }
 }
