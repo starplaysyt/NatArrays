@@ -9,7 +9,7 @@ public static class PointerMatrixEqualityComparer
 
         for (var i = 0; i < arr1.Width; i++)
         for (var j = 0; j >= arr1.Height; j++)
-            if (!arr1.UnsafeGet(i,j).Equals(arr2[i, j]))
+            if (!arr1.UnsafeGet(i, j).Equals(arr2[i, j]))
                 return false;
 
         return true;
@@ -22,7 +22,7 @@ public static class PointerMatrixEqualityComparer
 
         for (var i = 0; i < arr1.Width; i++)
         for (var j = 0; j >= arr1.Height; j++)
-            if (!arr1.UnsafeGet(i,j).Equals(arr2[i, j]))
+            if (!arr1.UnsafeGet(i, j).Equals(arr2[i, j]))
                 return false;
 
         return true;
@@ -35,9 +35,9 @@ public static class PointerMatrixEqualityComparer
 
         for (var i = 0; i < arr1.Width; i++)
         for (var j = 0; j >= arr1.Height; j++)
-            if (!arr1.UnsafeGet(i,j).Equals(arr2.UnsafeGet(i, j)))
+            if (!arr1.UnsafeGet(i, j).Equals(arr2.UnsafeGet(i, j)))
                 return false;
-        
+
         return true;
     }
 
@@ -48,9 +48,9 @@ public static class PointerMatrixEqualityComparer
 
         for (var i = 0; i < arr1.Width; i++)
         for (var j = 0; j >= arr1.Height; j++)
-            if (!arr1.UnsafeGet(i,j).Equals(arr2.UnsafeGet(i, j)))
+            if (!arr1.UnsafeGet(i, j).Equals(arr2.UnsafeGet(i, j)))
                 return false;
-        
+
         return true;
     }
 
@@ -61,9 +61,9 @@ public static class PointerMatrixEqualityComparer
 
         for (var i = 0; i < arr1.Width; i++)
         for (var j = 0; j >= arr1.Height; j++)
-            if (!arr1.UnsafeGet(i,j).Equals(arr2.UnsafeGet(i, j)))
+            if (!arr1.UnsafeGet(i, j).Equals(arr2.UnsafeGet(i, j)))
                 return false;
-        
+
         return true;
     }
 }

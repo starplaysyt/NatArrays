@@ -14,7 +14,7 @@ public static class ReflectionUtils
     public static PropertyInfo[] GetPropertyInfos(Type type)
     {
         if (PropertyInfos.TryGetValue(type.Name, out var infos)) return infos;
-        
+
         var properties = type.GetProperties();
         PropertyInfos[type.Name] = properties;
         return properties;
@@ -23,10 +23,10 @@ public static class ReflectionUtils
     public static PropertyInfo GetPropertyInfo(Type type, Func<PropertyInfo, bool> predicate)
     {
         var result = GetPropertyInfos(type).FirstOrDefault(predicate);
-        
+
         return result ?? throw new InvalidOperationException($"Could not find property by got predicate in {type.Name}.");
     }
-    
+
     public static string[] GetPropertiesStringValues(object obj, PropertyInfo[] properties)
     {
         // TODO: Think about buffering it somehow, or implement direct getting
@@ -49,33 +49,33 @@ public static class ReflectionUtils
     {
         if (!info.CanRead) throw new InvalidOperationException($"Property {info.Name} is write-only.");
         if (info.DeclaringType is null) throw new InvalidOperationException($"Property is not declared in the class.");
-        
+
         var getMethod = info.GetMethod!;
-        
+
         if (getMethod.IsStatic) throw new InvalidOperationException($"Static methods are not supported.");
-        
+
         if (MethodDelegates.TryGetValue(getMethod, out var methodDelegate))
             return (methodDelegate as Func<object, object?>)!;
-        
+
         // Declaring obj parameter for lambda
         var instanceDecl = Expression.Parameter(typeof(object), "obj");
 
         // Converting obj -> class type
         var convertExpr = Expression.Convert(instanceDecl, info.DeclaringType!);
-        
+
         // Calling getter without args
         var callExpr = Expression.Call(
             convertExpr,
             getMethod);
-        
+
         // Lambda declaring with the result (callExpr)
         var lambda = Expression.Lambda<Func<object, object?>>(
             callExpr,
             instanceDecl);
-        
+
         // Compiling lambda, getting delegate
         var result = lambda.Compile();
-        
+
         MethodDelegates[getMethod] = result;
         return result;
     }
@@ -93,42 +93,44 @@ public static class ReflectionUtils
     {
         if (!info.CanWrite) throw new InvalidOperationException($"Property {info.Name} is read-only.");
         if (info.DeclaringType is null) throw new InvalidOperationException($"Property is not declared in the class.");
-        
+
         var setMethod = info.SetMethod!;
-        
+
         if (setMethod.IsStatic) throw new InvalidOperationException($"Static methods are not supported.");
-        
+
         if (MethodDelegates.TryGetValue(setMethod, out var methodDelegate))
             return (methodDelegate as Action<object, object?>)!;
-        
+
         // Declaring obj and value parameters for lambda
         var instanceDecl = Expression.Parameter(typeof(object), "obj");
         var valueDecl = Expression.Parameter(typeof(object), "value");
-        
+
         // Converting obj -> class type, value -> property type
         var instanceConvertExpr = Expression.Convert(instanceDecl, info.DeclaringType!);
         var valueConvertExpr = Expression.Convert(valueDecl, info.PropertyType);
-        
+
         // Calling setter with one arg
         var callExpr = Expression.Call(instanceConvertExpr, setMethod, valueConvertExpr);
 
         // Lambda declaring with the result (callExpr)
         var lambda = Expression.Lambda<Action<object, object?>>(
-            callExpr, instanceDecl, valueDecl);
-        
+            callExpr,
+            instanceDecl,
+            valueDecl);
+
         // Compiling lambda, getting delegate
         var result = lambda.Compile();
-        
+
         MethodDelegates[setMethod] = result;
         return result;
     }
-    
+
 
     public static IEnumerable<string> GetPropertiesToString<T>(PropertyInfo[] properties, T value)
     {
         return properties.Select(propertyInfo => propertyInfo.GetValue(value, null)?.ToString() ?? string.Empty);
     }
-    
+
     public static IEnumerable<string> GetPropertiesNames<T>(PropertyInfo[] properties) =>
         properties.Select(propertyInfo => propertyInfo.Name);
 }

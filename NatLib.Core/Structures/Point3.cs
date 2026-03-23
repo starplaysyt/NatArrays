@@ -8,13 +8,22 @@ public struct Point3 : IEquatable<Point3>
     public Vector3 Value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Point3(float x, float y, float z) => Value = new Vector3(x, y, z);
+    public Point3(float x, float y, float z)
+    {
+        Value = new Vector3(x, y, z);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Point3(Vector3 value) => Value = value;
+    public Point3(Vector3 value)
+    {
+        Value = value;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Point3(Point2 xy, float z) => Value = new Vector3(xy.Value, z);
+    public Point3(Point2 xy, float z)
+    {
+        Value = new Vector3(xy.Value, z);
+    }
 
     // --- Properties ---
 
@@ -105,6 +114,7 @@ public struct Point3 : IEquatable<Point3>
     public static Point3 operator -(Point3 a) => new(-a.Value);
 
     public static bool operator ==(Point3 a, Point3 b) => a.Value == b.Value;
+
     public static bool operator !=(Point3 a, Point3 b) => a.Value != b.Value;
 
     // --- Conversions ---
@@ -159,8 +169,8 @@ public struct Point3 : IEquatable<Point3>
 
     // --- Constants ---
 
-    public static readonly Point3 Zero  = new(Vector3.Zero);
-    public static readonly Point3 One   = new(Vector3.One);
+    public static readonly Point3 Zero = new(Vector3.Zero);
+    public static readonly Point3 One = new(Vector3.One);
     public static readonly Point3 UnitX = new(Vector3.UnitX);
     public static readonly Point3 UnitY = new(Vector3.UnitY);
     public static readonly Point3 UnitZ = new(Vector3.UnitZ);
@@ -168,7 +178,10 @@ public struct Point3 : IEquatable<Point3>
     // --- Equality ---
 
     public bool Equals(Point3 other) => Value.Equals(other.Value);
+
     public override bool Equals(object? obj) => obj is Point3 o && Equals(o);
+
     public override int GetHashCode() => Value.GetHashCode();
+
     public override string ToString() => $"Point3({X}, {Y}, {Z})";
 }

@@ -27,7 +27,6 @@ public static class ConsoleRenderer
     }
 
     #region ConsoleExt
-    
     public static void ClearFromCursor() =>
         Writer.Write("\e[J");
 
@@ -58,10 +57,7 @@ public static class ConsoleRenderer
     }
     #endregion
 
-    public static (int Left, int Top) GetCheckpoint()
-    {
-        return (Console.CursorLeft, Console.CursorTop);
-    }
+    public static (int Left, int Top) GetCheckpoint() => (Console.CursorLeft, Console.CursorTop);
 
     public static void GotoCheckpoint((int Left, int Top) checkpoint, bool clear = true)
     {

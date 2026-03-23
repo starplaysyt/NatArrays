@@ -6,12 +6,12 @@ public class MultipleChoiceConversationElement : IConversationElement
 {
     private string[] _titles;
     private IConversationElement[] _conversations;
-    
-    public (int, int) CursorLocation { get; set; }
+
+    public (int, int) EntryCursorLocation { get; set; }
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
 
-    public void Start(ConversationQuery? parent = null)
+    public void Start()
     {
         throw new NotImplementedException();
     }
@@ -21,7 +21,7 @@ public class MultipleChoiceConversationElement : IConversationElement
     {
         _titles = new string[conversations.Count];
         _conversations = new IConversationElement[conversations.Count];
-        
+
         for (var i = 0; i < conversations.Count; i++)
         {
             _titles[i] = conversations[i].Title;

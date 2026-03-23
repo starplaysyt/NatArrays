@@ -8,10 +8,16 @@ public struct Point2 : IEquatable<Point2>
     public Vector2 Value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Point2(float x, float y) => Value = new Vector2(x, y);
+    public Point2(float x, float y)
+    {
+        Value = new Vector2(x, y);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Point2(Vector2 value) => Value = value;
+    public Point2(Vector2 value)
+    {
+        Value = value;
+    }
 
     // --- Properties ---
 
@@ -76,6 +82,7 @@ public struct Point2 : IEquatable<Point2>
     public static Point2 operator -(Point2 a) => new(-a.Value);
 
     public static bool operator ==(Point2 a, Point2 b) => a.Value == b.Value;
+
     public static bool operator !=(Point2 a, Point2 b) => a.Value != b.Value;
 
     // --- Conversions ---
@@ -119,15 +126,18 @@ public struct Point2 : IEquatable<Point2>
 
     // --- Constants ---
 
-    public static readonly Point2 Zero  = new(Vector2.Zero);
-    public static readonly Point2 One   = new(Vector2.One);
+    public static readonly Point2 Zero = new(Vector2.Zero);
+    public static readonly Point2 One = new(Vector2.One);
     public static readonly Point2 UnitX = new(Vector2.UnitX);
     public static readonly Point2 UnitY = new(Vector2.UnitY);
 
     // --- Equality ---
 
     public bool Equals(Point2 other) => Value.Equals(other.Value);
+
     public override bool Equals(object? obj) => obj is Point2 o && Equals(o);
+
     public override int GetHashCode() => Value.GetHashCode();
+
     public override string ToString() => $"Point2({X}, {Y})";
 }

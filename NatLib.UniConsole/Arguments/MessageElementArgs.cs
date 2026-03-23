@@ -9,6 +9,6 @@ public struct MessageElementArgs
 
     public MessageElementArgs()
     {
-        
+
     }
 }

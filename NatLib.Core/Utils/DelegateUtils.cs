@@ -15,21 +15,21 @@ public static class DelegateUtils
     /// <typeparam name="T">Requested type in input.</typeparam>
     /// <returns>Validated input.</returns>
     public static T ValidateCycle<T>(
-        Action? beforeInput, 
-        Func<T> input, 
-        Func<T, bool> validate, 
+        Action? beforeInput,
+        Func<T> input,
+        Func<T, bool> validate,
         Action? onError)
     {
         CYCLE_START:
         beforeInput?.Invoke();
         var value = input.Invoke();
-        
+
         if (validate(value)) return value;
-        
+
         onError?.Invoke();
         goto CYCLE_START;
     }
-    
+
     /// <summary>
     /// Presents simple validation cycle with exit option. <br/> <br/>
     /// <b>Pipeline:</b> beforeInput -> input -> return true and sets result if validation(input) is true
@@ -43,10 +43,10 @@ public static class DelegateUtils
     /// <typeparam name="T">Type requested in input.</typeparam>
     /// <returns><b>true</b> - when got input successfully validated,<br/><b>false</b> - when exit used.</returns>
     public static bool ValidateCycleWithExit<T>(
-        Action? beforeInput, 
+        Action? beforeInput,
         Func<T> input,
         Func<T, bool> validate,
-        Func<bool> shouldExit, 
+        Func<bool> shouldExit,
         out T? result)
     {
         result = default;
@@ -63,7 +63,7 @@ public static class DelegateUtils
         result = value;
         return true;
     }
-    
+
     /// <summary>
     /// Presents simple validation cycle without exit option and type-linking. <br/> <br/>
     /// <b>Pipeline:</b> beforeInput -> validate -> return when validate is true -> onError -> repeat 
@@ -79,7 +79,7 @@ public static class DelegateUtils
         CYCLE_START:
         beforeInput?.Invoke();
         if (validate()) return;
-        
+
         onError?.Invoke();
         goto CYCLE_START;
     }
@@ -101,10 +101,10 @@ public static class DelegateUtils
         CYCLE_START:
         beforeInput?.Invoke();
         if (validate()) return true;
-        
-        if (shouldExit()) 
+
+        if (shouldExit())
             goto CYCLE_START;
-        
+
         return false;
     }
 }

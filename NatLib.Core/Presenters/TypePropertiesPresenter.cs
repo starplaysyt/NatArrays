@@ -10,11 +10,11 @@ public class TypePropertiesPresenter : IStringPresenter
     public readonly PropertyInfo[] PropertyInfos;
 
     public readonly Type PresentedType;
-    
+
     public PropertyInfo this[int id] => PropertyInfos[id];
-    
+
     public int Count => PropertyInfos.Length;
-    
+
     public TypePropertiesPresenter(Type type)
     {
         PropertyInfos = type.GetProperties();
@@ -25,14 +25,14 @@ public class TypePropertiesPresenter : IStringPresenter
     {
         var propertyInfo = PropertyInfos[propertyId];
 
-        var propSetter = 
+        var propSetter =
             ReflectionUtils.GetPropertySetterDelegate(propertyInfo);
-        
+
         propSetter.Invoke(owner, value);
-        
+
         return true;
     }
-    
+
     public string PresentString()
     {
         var width = StringStructuralConfiguration.Instance.PreferableWidth;
@@ -40,20 +40,20 @@ public class TypePropertiesPresenter : IStringPresenter
         var length = totalLines * (width + 1);
         Span<char> result = stackalloc char[length];
 
-        int offset = 0;
-        
+        var offset = 0;
+
         StringStructuralUtils.WriteTopBorder(result.Slice(offset, width));
         offset += width;
         result[offset++] = '\n';
-        
-        for (int i = 0; i < PropertyInfos.Length; i++)
+
+        for (var i = 0; i < PropertyInfos.Length; i++)
         {
             var message = $"{i + 1}. {PropertyInfos[i].Name}";
             StringStructuralUtils.WriteMessageInBounds(result.Slice(offset, width), message);
             offset += width;
             result[offset++] = '\n';
         }
-        
+
         StringStructuralUtils.WriteBottomBorder(result.Slice(offset, width));
         offset += width;
 

@@ -22,30 +22,30 @@ public static class SpanCharUtils
                 return;
         }
     }
-    
+
     public static void FixSpanLeft(Span<char> dst, (string Source, char Character) state)
     {
         var span = state.Source.AsSpan();
-        var copy = Math.Min(span.Length, dst.Length); 
-            
+        var copy = Math.Min(span.Length, dst.Length);
+
         span[..copy].CopyTo(dst); // Copying existed part.
 
         if (copy < dst.Length) // Filling the rest. Do nothing when there is nothing to fill.
-            dst[copy..].Fill(state.Character);  
+            dst[copy..].Fill(state.Character);
     }
-    
+
     public static void FixSpanRight(Span<char> dst, (string Source, char Character) state)
     {
         var span = state.Source.AsSpan();
         var copy = Math.Min(span.Length, dst.Length);
         var offset = dst.Length - copy;
-        
+
         if (copy < dst.Length)
             dst[..offset].Fill(state.Character); // Filling with padding.
-        
+
         span[..copy].CopyTo(dst[offset..]); // Copying with padding.
     }
-    
+
     public static void FixSpanCenter(Span<char> dst, (string Source, char Character) state)
     {
         var span = state.Source.AsSpan();
@@ -54,14 +54,14 @@ public static class SpanCharUtils
         var totalPad = dst.Length - copy;
         var leftPad = totalPad / 2;
         var rightPad = totalPad - leftPad;
-        
+
         dst[..leftPad].Fill(state.Character);
-        
+
         span[..copy].CopyTo(dst[leftPad..]);
-        
+
         dst.Slice(leftPad + copy, rightPad).Fill(state.Character);
     }
-    
+
     public static void GenerateJoinSpan(Span<char> dst,
         (char LeftSide, char RightSide, char MiddleFill, char MiddleSeparator, int[] Lengths) state)
     {
@@ -71,11 +71,11 @@ public static class SpanCharUtils
         dst = dst[1..^1];
 
         var pos = 0;
-        
+
         for (var i = 0; i < lengths.Length; i++)
         {
-            int len = lengths[i];
-            
+            var len = lengths[i];
+
             dst.Slice(pos, len + 2).Fill(state.MiddleFill);
 
             pos += len + 2;
@@ -87,7 +87,7 @@ public static class SpanCharUtils
             }
         }
     }
-    
+
     public static void WrapJoinSpan(Span<char> dst, (string[] Array, int[] Lengths, char Separator, Alignment Alignment) state)
     {
         var array = state.Array.AsSpan();
@@ -96,7 +96,7 @@ public static class SpanCharUtils
         var alignment = state.Alignment;
 
         var lastLocation = 0;
-        for (int i = 0; i < array.Length; i++)
+        for (var i = 0; i < array.Length; i++)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(lengths[i]);
             var localDst = dst.Slice(lastLocation, lengths[i] + 3);
@@ -111,12 +111,12 @@ public static class SpanCharUtils
         dst[^2] = ' ';
         dst[^1] = separator;
     }
-    
+
     public static int TryFormat<T>(T obj, Span<char> destination, [StringSyntax("StringFormat")] string format) where T : ISpanFormattable
         => obj.TryFormat(destination, out var charsWritten, format, null) ? charsWritten : -1;
 
     public static int TryCopy(string obj, Span<char> destination)
-    { 
+    {
         obj.TryCopyTo(destination);
         return Math.Min(obj.Length, destination.Length);
     }

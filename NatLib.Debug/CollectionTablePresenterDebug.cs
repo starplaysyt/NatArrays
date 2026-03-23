@@ -6,60 +6,63 @@ namespace NatLib.Debug;
 
 public static class CollectionTablePresenterDebug
 {
-	public class TestingClassChild : IParsable<TestingClassChild>
-	{
-		public int A { get; set; }
-		public int B { get; set; }
-		
-		public TestingClassChild(int a, int b) => (A, B) = (a, b);
+    public class TestingClassChild : IParsable<TestingClassChild>
+    {
+        public int A { get; set; }
+        public int B { get; set; }
 
-		public override string ToString() => "(A : B)";
+        public TestingClassChild(int a, int b)
+        {
+            (A, B) = (a, b);
+        }
 
-		public static TestingClassChild Parse(string s, IFormatProvider? provider)
-		{
-			var span = s.AsSpan()[1..^2];
-			var sep = span.IndexOf(':');
-			var a = int.Parse(span[..sep].Trim());
-			var b = int.Parse(span[(sep + 1)..].Trim());
+        public override string ToString() => "(A : B)";
 
-			return new TestingClassChild(a, b);
-		}
+        public static TestingClassChild Parse(string s, IFormatProvider? provider)
+        {
+            var span = s.AsSpan()[1..^2];
+            var sep = span.IndexOf(':');
+            var a = int.Parse(span[..sep].Trim());
+            var b = int.Parse(span[(sep + 1)..].Trim());
 
-		public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out TestingClassChild result)
-		{
-			try
-			{
-				var span = s.AsSpan()[1..^2];
-				var sep = span.IndexOf(':');
-				var a = int.Parse(span[..sep].Trim());
-				var b = int.Parse(span[(sep + 1)..].Trim());
-			
-				result = new TestingClassChild(a, b);
-				return true;
-			}
-			catch (Exception)
-			{
-				result = null;
-				return false;
-			}
-		}
-	}
-	
-	public class TestingStruct (string stringProp, float floatProp, int intProp, bool boolProp, DateTime dateTimeProp, TestingClassChild child)
-	{
-		public string StringProp { get; set; } = stringProp;
-		public float FloatProp { get; set; } = floatProp;
-		public int IntProp { get; set; } = intProp;
-		public bool BoolProp { get; set; } = boolProp;
-		public DateTime DateTimeProp { get; set; } = dateTimeProp;
-		public TestingClassChild Child { get; set; } = child;
+            return new TestingClassChild(a, b);
+        }
 
-		public TestingStruct() : this("", 0, 0, true, new DateTime(), new TestingClassChild(0,0))
-		{
-			
-		}
-	}
-	
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out TestingClassChild result)
+        {
+            try
+            {
+                var span = s.AsSpan()[1..^2];
+                var sep = span.IndexOf(':');
+                var a = int.Parse(span[..sep].Trim());
+                var b = int.Parse(span[(sep + 1)..].Trim());
+
+                result = new TestingClassChild(a, b);
+                return true;
+            }
+            catch (Exception)
+            {
+                result = null;
+                return false;
+            }
+        }
+    }
+
+    public class TestingStruct(string stringProp, float floatProp, int intProp, bool boolProp, DateTime dateTimeProp, TestingClassChild child)
+    {
+        public string StringProp { get; set; } = stringProp;
+        public float FloatProp { get; set; } = floatProp;
+        public int IntProp { get; set; } = intProp;
+        public bool BoolProp { get; set; } = boolProp;
+        public DateTime DateTimeProp { get; set; } = dateTimeProp;
+        public TestingClassChild Child { get; set; } = child;
+
+        public TestingStruct() : this("", 0, 0, true, new DateTime(), new TestingClassChild(0, 0))
+        {
+
+        }
+    }
+
     public static void MainMethod()
     {
         var list = new List<TestingStruct>

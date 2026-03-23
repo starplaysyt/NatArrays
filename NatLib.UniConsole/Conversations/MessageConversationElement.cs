@@ -7,23 +7,24 @@ namespace NatLib.UniConsole.Conversations;
 
 public class MessageConversationElement : IConversationElement
 {
-    public (int, int) CursorLocation { get; set; }
+    public (int, int) EntryCursorLocation { get; set; }
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
     public MessageElementArgs RequestArgs { get; set; }
 
-    public MessageConversationElement(MessageElementArgs requestArgs, IConversationElement? nextElement)
+    public MessageConversationElement(MessageElementArgs requestArgs,
+        IConversationElement? nextElement)
     {
         RequestArgs = requestArgs;
         DistinctAfterUsage = requestArgs.DistinctAfterUsage;
         NextElement = nextElement;
     }
 
-    public void Start(ConversationQuery? parent = null)
+    public void Start()
     {
         var reqArgs = RequestArgs;
-        CursorLocation = ConsoleRenderer.GetCheckpoint();
-        
+        EntryCursorLocation = ConsoleRenderer.GetCheckpoint();
+
         ConsoleRenderer.WriteTopBorder();
         ConsoleRenderer.WriteMessageInBounds(reqArgs.Message);
         if (reqArgs.WaitForUserKey)
@@ -38,12 +39,12 @@ public class MessageConversationElement : IConversationElement
             ConsoleRenderer.WriteBottomBorder();
         }
 
-        if (DistinctAfterUsage) 
-            ConsoleRenderer.GotoCheckpoint(CursorLocation);
-        
+        if (DistinctAfterUsage)
+            ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
+
         NextElement?.Start();
-        
+
         if (reqArgs.ClearAtTheEnd)
-            ConsoleRenderer.GotoCheckpoint(CursorLocation);
+            ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
     }
 }

@@ -2,7 +2,7 @@ using NatLib.UniConsole.Interfaces;
 
 namespace NatLib.UniConsole.Conversations;
 
-public class ConversationQuery 
+public class ConversationQuery
 {
     public Dictionary<string, IConversationElement> StaticElements { get; set; }
     public IConversationElement RootElement { get; set; }
@@ -19,9 +19,9 @@ public class ConversationQuery
     {
         foreach (var staticElement in StaticElements)
         {
-            staticElement.Value.Start(this);
+            staticElement.Value.Start();
         }
-        
+
         RootElement.Start();
     }
 }

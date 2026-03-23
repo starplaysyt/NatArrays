@@ -10,11 +10,11 @@ public class TableConversationElement<T> : IConversationElement where T : class
     {
         _tableCollectionPresenter = presenter;
     }
-    public (int, int) CursorLocation { get; set; }
+    public (int, int) EntryCursorLocation { get; set; }
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
 
-    public void Start(ConversationQuery? parent = null)
+    public void Start()
     {
         throw new NotImplementedException();
     }

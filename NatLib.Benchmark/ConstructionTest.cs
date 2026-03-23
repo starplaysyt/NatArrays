@@ -9,6 +9,6 @@ public class ConstructionTest
     [Benchmark]
     public void Unit2_ReadProperty()
     {
-        
+
     }
 }

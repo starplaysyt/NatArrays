@@ -128,7 +128,11 @@ public class PointerArrayTests
         var arr = new PointerArray<int>();
         arr.Allocate(2);
 
-        Assert.Throws<InvalidOperationException>(() => arr.FromManaged(new[] { 1, 2 }));
+        Assert.Throws<InvalidOperationException>(() => arr.FromManaged(new[]
+        {
+            1,
+            2
+        }));
 
         arr.Deallocate();
     }

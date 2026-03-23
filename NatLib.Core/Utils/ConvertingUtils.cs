@@ -11,7 +11,7 @@ public static class ConvertingUtils
     public static bool TryReflectionConvert(string? input, Type targetType, out object? value)
     {
         value = null;
-        
+
         // string
         if (targetType == typeof(string))
         {
@@ -35,8 +35,8 @@ public static class ConvertingUtils
         // enum
         if (targetType.IsEnum)
         {
-            if (!Enum.TryParse(targetType, input, ignoreCase: true, out var ev)) return false;
-            
+            if (!Enum.TryParse(targetType, input, true, out var ev)) return false;
+
             value = ev;
             return true;
         }
@@ -51,7 +51,7 @@ public static class ConvertingUtils
             return TryIParsable(input, targetType, out value);
         }
     }
-    
+
     private static bool TryIParsable(string? input, Type targetType, out object? value)
     {
         value = null;
@@ -68,14 +68,14 @@ public static class ConvertingUtils
         var tryParseMethod = targetType.GetMethod(
             "TryParse",
             BindingFlags.Public | BindingFlags.Static,
-            binder: null,
+            null,
             new[]
             {
                 typeof(string),
                 typeof(IFormatProvider),
                 targetType.MakeByRefType()
             },
-            modifiers: null);
+            null);
 
         if (tryParseMethod == null)
             return false;

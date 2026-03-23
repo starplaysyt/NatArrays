@@ -23,7 +23,9 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Returns whether matrix is allocated or not
     /// </summary>
-    public bool IsAllocated { get { unsafe { return Pointer != null; } } }
+    public bool IsAllocated
+    { get
+      { unsafe { return Pointer != null; } } }
 
     /// <summary>
     /// Gets absolute length of the matrix
@@ -33,7 +35,9 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Gets length of the matrix in byte representation
     /// </summary>
-    public ulong ByteLength { get { unsafe { return (ulong)(sizeof(T) * Length); } } }
+    public ulong ByteLength
+    { get
+      { unsafe { return (ulong)(sizeof(T) * Length); } } }
 
     /// <summary>
     /// Gets reference of the element in the matrix by its X and Y
@@ -67,34 +71,57 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Returns ref by x and y to element without any checks.
     /// </summary>
-    public ref T UnsafeRef(int x, int y) { unsafe { return ref Pointer[y * Width + x]; } }
+    public ref T UnsafeRef(int x, int y)
+    {
+        unsafe { return ref Pointer[y * Width + x]; }
+    }
     /// <summary>
     /// Returns ref by i to element without any checks.
     /// </summary>
-    public ref T UnsafeRef(int i) { unsafe { return ref Pointer[i]; } }
+    public ref T UnsafeRef(int i)
+    {
+        unsafe { return ref Pointer[i]; }
+    }
     /// <summary>
     /// Returns element by x and y without any checks.
     /// </summary>
-    public T UnsafeGet(int x, int y) {  unsafe { return Pointer[y * Width + x]; } }
+    public T UnsafeGet(int x, int y)
+    {
+        unsafe { return Pointer[y * Width + x]; }
+    }
     /// <summary>
     /// Returns element by i without any checks.
     /// </summary>
-    public T UnsafeGet(int i) {  unsafe { return Pointer[i]; } }
+    public T UnsafeGet(int i)
+    {
+        unsafe { return Pointer[i]; }
+    }
     /// <summary>
     /// Sets element by x and y without any checks.
     /// </summary>
-    public T UnsafeSet(int x, int y, T value) { unsafe { return Pointer[y * Width + x] = value; } }
+    public T UnsafeSet(int x, int y, T value)
+    {
+        unsafe { return Pointer[y * Width + x] = value; }
+    }
     /// <summary>
     /// Sets element by i without any checks.
     /// </summary>
-    public T UnsafeSet(int i, T value) { unsafe { return Pointer[i] = value; } }
+    public T UnsafeSet(int i, T value)
+    {
+        unsafe { return Pointer[i] = value; }
+    }
     #endregion
 
-    public Span<T> AsSpan() { unsafe { 
-        return IsAllocated 
-            ? new Span<T>(Pointer, Length)
-            : throw new InvalidOperationException("Matrix is not allocated."); } }
-    
+    public Span<T> AsSpan()
+    {
+        unsafe
+        {
+            return IsAllocated
+                ? new Span<T>(Pointer, Length)
+                : throw new InvalidOperationException("Matrix is not allocated.");
+        }
+    }
+
     /// <summary>
     /// Allocates memory for the matrix.
     /// </summary>
@@ -106,7 +133,7 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <exception cref="OutOfMemoryException"> Throws when reallocating memory in bytes failed.</exception>
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode </exception>
     /// <remarks> See more about <see cref="InitializationMode"/>, that might be useful.</remarks>
-    public void Allocate(int width, int height, InitializationMode initMode = InitializationMode.Nothing) 
+    public void Allocate(int width, int height, InitializationMode initMode = InitializationMode.Nothing)
     {
         if (IsAllocated) throw new InvalidOperationException("Matrix is already allocated.");
         if (width <= 0) throw new ArgumentException("Width must be positive.");
@@ -119,7 +146,7 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
             Pointer = ptr;
             Width = width;
             Height = height;
-            
+
             switch (initMode)
             {
                 case InitializationMode.Nothing:
@@ -149,7 +176,7 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <exception cref="ArgumentOutOfRangeException"> Throws when given irregular InitializationMode.</exception>
     public void Resize(int newWidth,
         int newHeight,
-        InitializationMode initMode = InitializationMode.Nothing) 
+        InitializationMode initMode = InitializationMode.Nothing)
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
         if (newWidth <= 0) throw new ArgumentException("Width must be positive.");
@@ -160,10 +187,10 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
         {
             var oldWidth = Width;
             var oldHeight = Height;
-            
+
             var copyWidth = Math.Min(oldWidth, newWidth); // How much data we need to copy further
             var copyHeight = Math.Min(oldHeight, newHeight);
-            
+
             var reallocateBytes = (nuint)(newWidth * newHeight * sizeof(T)); // How many bytes will be given to allocator
             var copyBytes = (nuint)(copyWidth * sizeof(T)); // How many bytes we need to copy
 
@@ -207,14 +234,14 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
                     throw new OutOfMemoryException($"Failed to allocate {ByteLength} bytes.");
                 Pointer = localPtr;
             }
-            
+
             // Post-processing new matrix cells
             switch (initMode)
             {
                 case InitializationMode.Nothing:
                     break;
                 case InitializationMode.Zeroes:
-                    
+
                     // Clear extended parts of existing rows
                     for (var y = 0; y < Math.Min(oldHeight, newHeight); y++)
                     {
@@ -238,8 +265,8 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
                     {
                         // Start creating from oldWidth (when need to add some objects to the line)
                         // When it is a new line - filling all lines
-                        var startX = y < oldHeight ? oldWidth : 0; 
-                
+                        var startX = y < oldHeight ? oldWidth : 0;
+
                         for (var x = startX; x < newWidth; x++)
                         {
                             Pointer[y * newWidth + x] = new T();
@@ -263,13 +290,13 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     public void Clear(InitializationMode initMode = InitializationMode.Zeroes)
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
-        
+
         unsafe
         {
             switch (initMode)
             {
                 // If you want to do nothing - that's up to you
-                case InitializationMode.Nothing: 
+                case InitializationMode.Nothing:
                     return;
                 // Clearing with zeroes
                 case InitializationMode.Zeroes:
@@ -291,7 +318,7 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <param name="value"> Value to be placed in matrix cells</param>
     /// <exception cref="InvalidOperationException"> Throws when matrix is not allocated</exception>
-    public void Fill(T value) 
+    public void Fill(T value)
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
 
@@ -300,13 +327,13 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
             new Span<T>(Pointer, Length).Fill(value);
         }
     }
-    
+
     /// <summary>
     /// Allocates an unmanaged matrix with elements from the managed array.
     /// </summary>
     /// <param name="matrix"> Managed matrix</param>
     /// <exception cref="InvalidOperationException"> Throws when matrix is already allocated</exception>
-    public void FromManaged(T[,] matrix) 
+    public void FromManaged(T[,] matrix)
     {
         if (IsAllocated) throw new InvalidOperationException("Matrix is already allocated.");
         ArgumentNullException.ThrowIfNull(matrix);
@@ -316,38 +343,38 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
             Width = matrix.GetLength(0);
             Height = matrix.GetLength(1);
             Pointer = (T*)NativeMemory.Alloc((nuint)(Width * Height), (nuint)sizeof(T));
-            
+
             for (var y = 0; y < Height; y++)
-                for (var x = 0; x < Width; x++)
-                    Pointer[y * Width + x] = matrix[x, y];
+            for (var x = 0; x < Width; x++)
+                Pointer[y * Width + x] = matrix[x, y];
         }
     }
-    
+
     /// <summary>
     /// Returns a managed copy of this matrix.
     /// </summary>
     /// <returns> New managed matrix</returns>
     /// <exception cref="InvalidOperationException"> Throws when matrix is not allocated</exception>
-    public T[,] GetManaged() 
+    public T[,] GetManaged()
     {
         if (!IsAllocated) throw new InvalidOperationException("Matrix is not allocated.");
-        
+
         var output = new T[Width, Height];
 
         unsafe
         {
             for (var x = 0; x < Width; x++)
-            for (var y = 0; y < Height; y++) 
+            for (var y = 0; y < Height; y++)
                 output[x, y] = Pointer[y * Width + x];
         }
 
         return output;
     }
-    
+
     /// <summary>
     /// Deallocates all memory used by this matrix.
     /// </summary>
-    public void Deallocate() 
+    public void Deallocate()
     {
         if (!IsAllocated) return;
 
@@ -363,15 +390,15 @@ public sealed class PointerSeqMatrix<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Calls <c>Deallocate()</c> and do <c>SuppressFinalize(this)</c>
     /// </summary>
-    public void Dispose() 
+    public void Dispose()
     {
         Deallocate();
         GC.SuppressFinalize(this);
     }
 
-    ~PointerSeqMatrix() 
+    ~PointerSeqMatrix()
     {
         Deallocate();
     }
-    
+
 }

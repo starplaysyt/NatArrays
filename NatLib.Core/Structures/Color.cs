@@ -83,10 +83,10 @@ public struct Color : IEquatable<Color>
     public static Color FromHex(string hex)
     {
         hex = hex.TrimStart('#');
-        byte r = Convert.ToByte(hex[0..2], 16);
-        byte g = Convert.ToByte(hex[2..4], 16);
-        byte b = Convert.ToByte(hex[4..6], 16);
-        byte a = hex.Length >= 8 ? Convert.ToByte(hex[6..8], 16) : (byte)255;
+        var r = Convert.ToByte(hex[0..2], 16);
+        var g = Convert.ToByte(hex[2..4], 16);
+        var b = Convert.ToByte(hex[4..6], 16);
+        var a = hex.Length >= 8 ? Convert.ToByte(hex[6..8], 16) : (byte)255;
         return FromBytes(r, g, b, a);
     }
 
@@ -138,6 +138,7 @@ public struct Color : IEquatable<Color>
     public static Color operator /(Color a, float s) => new(a.Value / s);
 
     public static bool operator ==(Color a, Color b) => a.Value == b.Value;
+
     public static bool operator !=(Color a, Color b) => a.Value != b.Value;
 
     // --- Conversions ---
@@ -196,23 +197,26 @@ public struct Color : IEquatable<Color>
 
     // --- Predefined ---
 
-    public static readonly Color Transparent     = new(0, 0, 0, 0);
-    public static readonly Color Black           = new(0, 0, 0);
-    public static readonly Color White           = new(1, 1, 1);
-    public static readonly Color Red             = new(1, 0, 0);
-    public static readonly Color Green           = new(0, 1, 0);
-    public static readonly Color Blue            = new(0, 0, 1);
-    public static readonly Color Yellow          = new(1, 1, 0);
-    public static readonly Color Cyan            = new(0, 1, 1);
-    public static readonly Color Magenta         = new(1, 0, 1);
-    public static readonly Color Gray            = new(0.5f, 0.5f, 0.5f);
-    public static readonly Color Orange          = new(1f, 0.647f, 0f);
-    public static readonly Color CornflowerBlue  = new(0.392f, 0.584f, 0.929f);
+    public static readonly Color Transparent = new(0, 0, 0, 0);
+    public static readonly Color Black = new(0, 0, 0);
+    public static readonly Color White = new(1, 1, 1);
+    public static readonly Color Red = new(1, 0, 0);
+    public static readonly Color Green = new(0, 1, 0);
+    public static readonly Color Blue = new(0, 0, 1);
+    public static readonly Color Yellow = new(1, 1, 0);
+    public static readonly Color Cyan = new(0, 1, 1);
+    public static readonly Color Magenta = new(1, 0, 1);
+    public static readonly Color Gray = new(0.5f, 0.5f, 0.5f);
+    public static readonly Color Orange = new(1f, 0.647f, 0f);
+    public static readonly Color CornflowerBlue = new(0.392f, 0.584f, 0.929f);
 
     // --- Equality ---
 
     public bool Equals(Color other) => Value.Equals(other.Value);
+
     public override bool Equals(object? obj) => obj is Color o && Equals(o);
+
     public override int GetHashCode() => Value.GetHashCode();
+
     public override string ToString() => $"Color({R:F3}, {G:F3}, {B:F3}, {A:F3})";
 }

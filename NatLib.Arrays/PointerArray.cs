@@ -6,7 +6,6 @@ namespace NatLib.Arrays;
 /// Implementation of a simple array in unmanaged memory.
 /// </summary>
 /// <typeparam name="T"> Unmanaged datatype</typeparam>
-
 public sealed class PointerArray<T> : IDisposable where T : unmanaged
 {
     internal unsafe T* Pointer = null;
@@ -14,7 +13,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Returns length of the array.
     /// </summary>
-    public int Length { get; private set; } 
+    public int Length { get; private set; }
 
     /// <summary>
     /// Returns whether array is allocated or not.
@@ -42,15 +41,24 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// <summary>
     /// Returns ref by i to element without any checks.
     /// </summary>
-    public ref T UnsafeRef(int i) { unsafe { return ref Pointer[i]; } }
+    public ref T UnsafeRef(int i)
+    {
+        unsafe { return ref Pointer[i]; }
+    }
     /// <summary>
     /// Returns element by i without any checks.
     /// </summary>
-    public T UnsafeGet(int i) { unsafe { return Pointer[i]; } }
+    public T UnsafeGet(int i)
+    {
+        unsafe { return Pointer[i]; }
+    }
     /// <summary>
     /// Sets element by i without any checks.
     /// </summary>
-    public void UnsafeSet(int i, T value) { unsafe { Pointer[i] = value; } }
+    public void UnsafeSet(int i, T value)
+    {
+        unsafe { Pointer[i] = value; }
+    }
     #endregion
 
     /// <summary>
@@ -58,12 +66,15 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     /// </summary>
     /// <exception cref="InvalidOperationException"> Throws when tried to get span from a deallocated array.</exception>
     /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in the context.</remarks>
-    public Span<T> AsSpan() { unsafe
+    public Span<T> AsSpan()
     {
-        return IsAllocated
-            ? new Span<T>(Pointer, Length)
-            : throw new InvalidOperationException("Array is not allocated.");
-    } }
+        unsafe
+        {
+            return IsAllocated
+                ? new Span<T>(Pointer, Length)
+                : throw new InvalidOperationException("Array is not allocated.");
+        }
+    }
 
     /// <summary>
     /// Allocates memory for an array.
@@ -117,7 +128,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
         }
         if (length == Length) return; // When nothing changed - do nothing.
         if (length <= 0) throw new ArgumentException("Length must be positive.");
-        
+
         unsafe
         {
             var oldLength = Length;
@@ -127,7 +138,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
 
 
             if (length <= Length) return; // No initialization need to be done.
-            
+
             switch (initMode)
             {
                 case InitializationMode.Nothing:
@@ -159,11 +170,11 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
             var ptr = (T*)NativeMemory.Alloc((nuint)array.Length, (nuint)sizeof(T));
             Pointer = ptr;
             Length = array.Length;
-            
+
             array.AsSpan().CopyTo(new Span<T>(Pointer, Length));
         }
     }
-    
+
     /// <summary>
     /// Returns a managed array from this unmanaged array.
     /// </summary>
@@ -185,7 +196,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     public void Deallocate()
     {
         if (!IsAllocated) return;
-        
+
         unsafe
         {
             NativeMemory.Free(Pointer);
@@ -193,7 +204,7 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
             Length = 0;
         }
     }
-    
+
     /// <summary>
     /// Calls <c>Deallocate()</c> and do <c>SuppressFinalize(this)</c>
     /// </summary>
@@ -203,5 +214,8 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
         GC.SuppressFinalize(this);
     }
 
-    ~PointerArray() => Dispose();
+    ~PointerArray()
+    {
+        Dispose();
+    }
 }

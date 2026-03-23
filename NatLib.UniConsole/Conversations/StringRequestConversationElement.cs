@@ -9,18 +9,18 @@ public class StringRequestConversationElement : IConversationElement
         RequestElementArgs<string> requestArgs,
         IConversationElement nextOperation)
     {
-        
+
     }
 
     public void Draw()
     {
         throw new NotImplementedException();
     }
-    public (int, int) CursorLocation { get; set; }
+    public (int, int) EntryCursorLocation { get; set; }
     public bool DistinctAfterUsage { get; set; }
     public IConversationElement? NextElement { get; set; }
 
-    public void Start(ConversationQuery? parent = null)
+    public void Start()
     {
         throw new NotImplementedException();
     }

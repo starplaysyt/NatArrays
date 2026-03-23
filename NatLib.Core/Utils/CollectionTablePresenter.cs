@@ -15,28 +15,24 @@ public class CollectionTablePresenter<T>
     private string _tableContainer = "";
 
     public BindingList<T> Collection { get; }
-    
+
     public StringStructuralConfiguration Configuration { get; }
 
     public bool ShowNumbers
-    {
-        get => field;
-        set
-        {
-            field = value;
-            Invalidate();
-        }
-    }
+    { get => field;
+      set
+      { field = value;
+        Invalidate(); } }
 
     public CollectionTablePresenter(BindingList<T> collection, StringStructuralConfiguration? configuration = null)
     {
         _properties = ReflectionUtils.GetPropertyInfos(typeof(T));
         _lengths = new int[_properties.Length];
-        
+
         Collection = collection;
 
         Collection.ListChanged += (_, _) => Invalidate();
-        
+
         Configuration = configuration ?? StringStructuralConfiguration.Instance;
     }
 
@@ -51,26 +47,26 @@ public class CollectionTablePresenter<T>
         _lengths = GetMaxLengthArray(Collection.AsEnumerable(), _properties, numbersLength);
 
         var lineLength = 1 + _lengths.Sum(l => l + 3);
-        
+
         var headerTopDivider = StringUtils.GenerateJoin(
-            configuration.CornerTopLeft, 
-            configuration.CornerTopRight, 
-            configuration.HorizontalLine, 
-            configuration.SectionTBottom, 
+            configuration.CornerTopLeft,
+            configuration.CornerTopRight,
+            configuration.HorizontalLine,
+            configuration.SectionTBottom,
             _lengths); // Header upper block
-        
+
         var header = string.Create( // generating headers
-                lineLength,
-                (
-                    Array: showNumbers 
-                                ? ReflectionUtils.GetPropertiesNames<T>(_properties).Prepend("№").ToArray() 
-                                : ReflectionUtils.GetPropertiesNames<T>(_properties).ToArray(),
-                    Lengths: _lengths,
-                    Separator: configuration.VerticalLine,
-                    Alignment: Alignment.Begin
-                ),
+            lineLength,
+            (
+                Array: showNumbers
+                    ? ReflectionUtils.GetPropertiesNames<T>(_properties).Prepend("№").ToArray()
+                    : ReflectionUtils.GetPropertiesNames<T>(_properties).ToArray(),
+                Lengths: _lengths,
+                Separator: configuration.VerticalLine,
+                Alignment: Alignment.Begin
+            ),
             SpanCharUtils.WrapJoinSpan
-            );
+        );
 
         var headerBottomDivider = StringUtils.GenerateJoin(
             configuration.SectionTRight,
@@ -82,7 +78,7 @@ public class CollectionTablePresenter<T>
         var dataStrings = Collection
             .Select((item, i) =>
             {
-                var dataRequest = showNumbers 
+                var dataRequest = showNumbers
                     ? ReflectionUtils.GetPropertiesToString(_properties, item).Prepend(i.ToString()).ToArray()
                     : ReflectionUtils.GetPropertiesToString(_properties, item).ToArray();
                 return string.Create( // generating data strings
@@ -95,7 +91,7 @@ public class CollectionTablePresenter<T>
                     ),
                     SpanCharUtils.WrapJoinSpan);
             }).ToArray();
-        
+
         var footerDivider = StringUtils.GenerateJoin(
             configuration.CornerBottomLeft,
             configuration.CornerBottomRight,
@@ -105,7 +101,7 @@ public class CollectionTablePresenter<T>
 
         StringBuilder bld = new(
             (lineLength + 1) * (4 + dataStrings.Length) - 1);
-        
+
         bld.AppendLine(headerTopDivider);
         bld.AppendLine(header);
         bld.AppendLine(headerBottomDivider);
@@ -113,7 +109,7 @@ public class CollectionTablePresenter<T>
         bld.Append('\n');
         bld.Append(footerDivider);
         _tableContainer = bld.ToString();
-        
+
         return _tableContainer;
     }
 
@@ -124,7 +120,7 @@ public class CollectionTablePresenter<T>
             return collection.Select(item => (property.GetValue(item)?.ToString() ?? "").Length)
                 .Append(property.Name.Length).Max();
         });
-        
+
         return numericsLength > 0 ? query.ToArray().Prepend(numericsLength).ToArray() : query.ToArray();
     }
 }
