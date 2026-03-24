@@ -6,7 +6,7 @@ namespace NatLib.UniConsole.Graphics;
 public static class ConsoleRenderer
 {
     /// <summary>
-    /// StringStructuralConfiguration object used to configure defaults used in generation.
+    /// Defines set of characters and parameters that will be used in rendering.
     /// </summary>
     public static readonly StringStructuralConfiguration Configuration = new();
 
@@ -73,7 +73,7 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Pads given span to given width, and writes it out on the screen.
+    /// Writes given line, fixing it to a specific width.
     /// </summary>
     /// <param name="str">Given span of chars to be padded.</param>
     /// <param name="width">Width of result output.</param>
@@ -94,7 +94,7 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Writes top table border with using of Configuration characters with global width, set by Configuration.
+    /// Writes the upper border using Configuration characters with the global width, defined by Configuration.
     /// </summary>
     public static void WriteTopBorder()
     {
@@ -111,7 +111,7 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Writes table message line, wrapped by separators with global width, set by Configuration.
+    /// Writes the message line, surrounded by side borders, with the global width, defined by Configuration.
     /// </summary>
     public static void WriteMessageLine(ReadOnlySpan<char> message)
     {
@@ -134,99 +134,10 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Writes separator line with global width, set by Configuration.
+    /// Writes the message line with the global width, defined by Configuration,
+    /// wrapped to next lines when overflowed.
     /// </summary>
-    public static void WriteSeparator()
-    {
-        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
-
-        var (left, center, right, width) = Configuration.DeconstructSeparator();
-        Span<char> chars = stackalloc char[width];
-        chars[0] = left;
-        chars[1..(width - 1)].Fill(center);
-        chars[width - 1] = right;
-
-        Writer.WriteLine(chars);
-    }
-
-    /// <summary>
-    /// Writes bottom table border with using of Configuration characters with global width, set by Configuration.
-    /// </summary>
-    public static void WriteBottomBorder()
-    {
-        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
-
-        var (left, center, right, width) = Configuration.DeconstructBottom();
-        Span<char> chars = stackalloc char[width];
-        chars[0] = left;
-        chars[1..(width - 1)].Fill(center);
-        chars[width - 1] = right;
-
-        Writer.WriteLine(chars);
-    }
-
-    /// <summary>
-    /// Writes menu table items with using of Configuration characters.
-    /// </summary>
-    /// <param name="title">Menu title.</param>
-    /// <param name="menuItems">Array of title elements.</param>
-    public static void WriteMenu(string title, string[] menuItems)
-    {
-        WriteTopBorder();
-        WriteMessageLine(title);
-        WriteSeparator();
-        foreach (var item in menuItems)
-        {
-            WriteMessageLine(item);
-        }
-        WriteBottomBorder();
-    }
-
-    /// <summary>
-    /// Writes menu table items with using of Configuration characters and provided numeration.
-    /// </summary>
-    /// <param name="title">Menu title.</param>
-    /// <param name="menuItems">Array of title elements.</param>
-    /// <param name="numerationStart">Number of first element.</param>
-    public static void WriteNumeratedMenu(string title, string[] menuItems, int numerationStart = 1)
-    {
-        WriteTopBorder();
-        WriteMessageLine(title);
-        WriteSeparator();
-        for (var i = 0; i < menuItems.Length; i++)
-            WriteMessageLine((i + numerationStart) + ". " + menuItems[i]);
-        WriteBottomBorder();
-    }
-
-    /// <summary>
-    /// Writes bordered message with using of Configuration characters.
-    /// </summary>
-    /// <param name="message">Given message.</param>
-    public static void WriteMessage(string message)
-    {
-        WriteTopBorder();
-        WriteMessageLine(message);
-        WriteBottomBorder();
-    }
-
-    /// <summary>
-    /// Writes bordered message with several lines inside with using of Configuration characters.
-    /// </summary>
-    /// <param name="lines">Given message lines.</param>
-    public static void WriteMessageMultiline(string[] lines)
-    {
-        WriteTopBorder();
-        foreach (var line in lines)
-            WriteMessageLine(line);
-        WriteBottomBorder();
-    }
-
-    /// <summary>
-    /// Writes bordered message with several lines inside with using of Configuration characters.
-    /// and performs word-wrap when needed.
-    /// </summary>
-    /// <param name="message">Given message.</param>
-    public static void WriteMessageWrap(ReadOnlySpan<char> message)
+    public static void WriteMessageLineWrapped(ReadOnlySpan<char> message)
     {
         var (side, center, width) = Configuration.DeconstructMiddle();
         var lineWidth = width - 4; // Length of content for one single line
@@ -245,13 +156,13 @@ public static class ConsoleRenderer
         // Structure is like that - '| <linewidth> |\n' = 5 extra characters for manual fill.
         for (var i = 0; i < linesCount; i++)
         {
-            var localSpan = chars[(i * width)..((i + 1) * width)];
-            localSpan[0] = side;
-            localSpan[1] = center;
-            charsCopied = SpanCharUtils.TryCopy(message[(lineWidth * i)..], localSpan[2..^3]);
-            localSpan[^3] = center;
-            localSpan[^2] = side;
-            localSpan[^1] = '\n';
+            var charsPtr = chars[(i * width)..((i + 1) * width)];
+            charsPtr[0] = side;
+            charsPtr[1] = center;
+            charsCopied = SpanCharUtils.TryCopy(message[(lineWidth * i)..], charsPtr[2..^3]);
+            charsPtr[^3] = center;
+            charsPtr[^2] = side;
+            charsPtr[^1] = '\n';
         }
         // Filling the last line with empty characters
         chars[^(lineWidth - charsCopied + 3)..^3].Fill(center);
@@ -259,34 +170,169 @@ public static class ConsoleRenderer
         Writer.Write(chars);
     }
 
+    public static void WriteMessageLines(ReadOnlySpan<char> message)
+    {
+        var (side, center, width) = Configuration.DeconstructMiddle();
+        // One \n splits line in 2 lines
+        var lineCount = message.Count('\n') + 1;
+        width++;
+        
+        Span<char> chars = stackalloc char[width * lineCount];
+        
+        // Last absolute position in message
+        var lastMessageIndex = 0;
+        // Last absolute position in chars
+        var lastCharsIndex = 0;
+        
+        for (var i = 0; i < lineCount; i++)
+        {
+            var messagePtr = message[lastMessageIndex..];
+            var currentLineIndex = messagePtr.IndexOf('\n');
+            if (currentLineIndex == -1) currentLineIndex = messagePtr.Length;
+            var charsPtr = chars.Slice(lastCharsIndex, width);
+            charsPtr[0] = side;
+            charsPtr[1] = center;
+            var charsCopied = SpanCharUtils.TryCopy(messagePtr[..currentLineIndex], charsPtr[2..^3]);
+            charsPtr[(2 + charsCopied)..^3].Fill(center);
+            charsPtr[^3] = center;
+            charsPtr[^2] = side;
+            charsPtr[^1] = '\n';
+
+            lastCharsIndex += width;
+            lastMessageIndex += currentLineIndex + 1;
+        }
+        
+        Writer.Write(chars);
+    }
+
     /// <summary>
-    /// Writes empty line.
+    /// Writes the separator line with global width, set by Configuration.
+    /// </summary>
+    public static void WriteSeparator()
+    {
+        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
+
+        var (left, center, right, width) = Configuration.DeconstructSeparator();
+        Span<char> chars = stackalloc char[width];
+        chars[0] = left;
+        chars[1..(width - 1)].Fill(center);
+        chars[width - 1] = right;
+
+        Writer.WriteLine(chars);
+    }
+
+    /// <summary>
+    /// Writes the lower border using Configuration characters with the global width, defined by Configuration.
+    /// </summary>
+    public static void WriteBottomBorder()
+    {
+        // INFO: Refactored to stack allocation method. +-4150ms -> 573ms
+
+        var (left, center, right, width) = Configuration.DeconstructBottom();
+        Span<char> chars = stackalloc char[width];
+        chars[0] = left;
+        chars[1..(width - 1)].Fill(center);
+        chars[width - 1] = right;
+
+        Writer.WriteLine(chars);
+    }
+
+    /// <summary>
+    /// Writes given menu items with using Configuration characters with the global width, defined by Configuration.
+    /// </summary>
+    /// <param name="title">Menu title.</param>
+    /// <param name="menuItems">Array of title elements.</param>
+    public static void WriteMenu(string title, string[] menuItems)
+    {
+        WriteTopBorder();
+        WriteMessageLine(title);
+        WriteSeparator();
+        foreach (var item in menuItems)
+        {
+            WriteMessageLine(item);
+        }
+        WriteBottomBorder();
+    }
+
+    /// <summary>
+    /// Writes given menu table items with with numeration using Configuration characters with the global width.
+    /// </summary>
+    /// <param name="title">Menu title.</param>
+    /// <param name="menuItems">Array of title elements.</param>
+    /// <param name="numerationStart">Presented number of first element.</param>
+    public static void WriteNumeratedMenu(string title, string[] menuItems, int numerationStart = 1)
+    {
+        WriteTopBorder();
+        WriteMessageLine(title);
+        WriteSeparator();
+        for (var i = 0; i < menuItems.Length; i++)
+            WriteMessageLine((i + numerationStart) + ". " + menuItems[i]);
+        WriteBottomBorder();
+    }
+
+    /// <summary>
+    /// Writes the bordered message with using Configuration characters with the global width.
+    /// </summary>
+    /// <param name="message">Given message.</param>
+    public static void WriteMessage(string message)
+    {
+        WriteTopBorder();
+        WriteMessageLine(message);
+        WriteBottomBorder();
+    }
+
+    /// <summary>
+    /// Writes the bordered message with several lines inside with using Configuration characters with the global width.
+    /// </summary>
+    /// <param name="lines">Given message lines.</param>
+    public static void WriteMessageMultiline(string[] lines)
+    {
+        WriteTopBorder();
+        foreach (var line in lines)
+            WriteMessageLine(line);
+        WriteBottomBorder();
+    }
+
+    /// <summary>
+    /// Writes the bordered message with several lines inside with using of Configuration characters.
+    /// and performs word-wrap when needed.
+    /// </summary>
+    /// <param name="message">Given message.</param>
+    public static void WriteMessageWrap(ReadOnlySpan<char> message)
+    {
+        WriteTopBorder();
+        WriteMessageLineWrapped(message);
+        WriteBottomBorder();
+    }
+
+    /// <summary>
+    /// Writes an empty line.
     /// </summary>
     public static void WriteLine() => Writer.WriteLine();
 
     /// <summary>
-    /// Writes span of chars to the console.
+    /// Writes the span of chars to the console.
     /// </summary>
     public static void Write(ReadOnlySpan<char> str) => Writer.Write(str);
 
     /// <summary>
-    /// Writes span of chars to the console and moves cursor to the next line.
+    /// Writes the span of chars to the console and moves cursor to the next line.
     /// </summary>
     public static void WriteLine(ReadOnlySpan<char> str) => Writer.WriteLine(str);
 
     /// <summary>
-    /// Writes character to the console.
+    /// Writes the character to the console.
     /// </summary>
     public static void Write(char ch) => Writer.Write(ch);
 
     /// <summary>
-    /// Writes character to the console and moves cursor to the next line.
+    /// Writes the character to the console and moves the cursor to the next line.
     /// </summary>
     public static void WriteLine(char ch) => Writer.WriteLine(ch);
 
     #region Reading Functions
     /// <summary>
-    /// Reads key from the console if its available, and returns ConsoleKey and result of operation.
+    /// Reads a key from the console if its available, and returns ConsoleKey and result of operation.
     /// </summary>
     public static bool TryGetKey(out ConsoleKey key)
     {
@@ -295,7 +341,7 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Reads key from the console if its available, and returns char key representation and result of operation.
+    /// Reads a key from the console if its available, and returns char key representation and result of operation.
     /// </summary>
     public static bool TryGetKey(out char key)
     {
@@ -304,28 +350,28 @@ public static class ConsoleRenderer
     }
 
     /// <summary>
-    /// Reads key from the console, waits until it's available, and returns ConsoleKey of given key.
+    /// Reads a key from the console, waits until it's available, and returns ConsoleKey of given key.
     /// </summary>
     /// <param name="intercept">Defines either key should be shown in console window or not.</param>
     public static ConsoleKey ReadConsoleKey(bool intercept = false) =>
         Console.ReadKey(intercept).Key;
 
     /// <summary>
-    /// Reads key from the console, waits until it's available, and returns char representation of given key.
+    /// Reads a key from the console, waits until it's available, and returns char representation of given key.
     /// </summary>
     /// <param name="intercept">Defines either key should be shown in console window or not.</param>
     public static char ReadCharKey(bool intercept = false) =>
         Console.ReadKey(intercept).KeyChar;
 
     /// <summary>
-    /// Reads key from the console, waits until it's available, and returns ConsoleKeyInfo of given key.
+    /// Reads a key from the console, waits until it's available, and returns ConsoleKeyInfo of given key.
     /// </summary>
     /// <param name="intercept">Defines either key should be shown in console window or not.</param>
     public static ConsoleKeyInfo ReadKey(bool intercept = false) =>
         Console.ReadKey(intercept);
 
     /// <summary>
-    /// Reads line from console. Returns empty string when returned line is null.
+    /// Reads a line from console. Returns empty string when returned line is null.
     /// </summary>
     public static string ReadLine() =>
         Console.ReadLine() ?? string.Empty;
@@ -357,13 +403,13 @@ public static class ConsoleRenderer
         Console.Clear();
 
     /// <summary>
-    /// Resets foreground color of the console text.
+    /// Resets the foreground color of the console text.
     /// </summary>
     public static void ResetForeground() =>
         CurrentForeground = ConsoleColorExt.Default;
 
     /// <summary>
-    /// Resets background color of the console text.
+    /// Resets the background color of the console text.
     /// </summary>
     public static void ResetBackground() =>
         CurrentBackground = ConsoleColorExt.Default;

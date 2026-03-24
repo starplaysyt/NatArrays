@@ -196,10 +196,11 @@ public class Program
         // );
         // entry.Start();
         
-        ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn");
-        ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
-                                              "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
-                                              "");
+        // ConsoleRenderer.WriteTopBorder();
+        // ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn");
+        // ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
+        //                                       "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" + "");
+        
+        ConsoleRendererManualTests.WriteMessageLinesTest();
     }
 }
