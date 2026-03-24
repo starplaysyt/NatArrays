@@ -13,7 +13,7 @@ public class MultipleChoiceConversationElement : IConversationElement
 
     public void Start()
     {
-        throw new NotImplementedException();
+        
     }
 
     public MultipleChoiceConversationElement(

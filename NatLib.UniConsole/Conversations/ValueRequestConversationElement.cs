@@ -24,7 +24,7 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
         var reqArgs = RequestArgs;
         EntryCursorLocation = ConsoleRenderer.GetCheckpoint();
         ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageInBounds(reqArgs.Message());
+        ConsoleRenderer.WriteMessageLine(reqArgs.Message());
 
         if (reqArgs.ReferencePresenter != null) // Reference generation
         {
@@ -52,10 +52,10 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
         else
         {
             ConsoleRenderer.WriteTopBorder();
-            ConsoleRenderer.WriteMessageInBounds(reqArgs.RetryMessage());
+            ConsoleRenderer.WriteMessageLine(reqArgs.RetryMessage());
             ConsoleRenderer.WriteSeparator();
 
-            ConsoleRenderer.WriteMessageInBounds(reqArgs.CanBeQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
+            ConsoleRenderer.WriteMessageLine(reqArgs.CanBeQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
             ConsoleRenderer.WriteBottomBorder();
             var key = Console.ReadKey(true).Key;
 
@@ -67,12 +67,12 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
 
             reqArgs.InvocationStatusProvider?.Invoke(false);
 
-            if (reqArgs.DistinctAfterQuit)
+            if (reqArgs.ClearBeforeQuit)
                 ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
 
             reqArgs.QuitElement?.Start();
 
-            if (reqArgs.QuitElementOverridesNextElement)
+            if (reqArgs.QuitCreatesExecutionBranch)
             {
                 if (reqArgs.ClearAtTheEnd)
                     ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
@@ -80,7 +80,7 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
             }
         }
 
-        if (reqArgs.DistinctAfterUsage)
+        if (reqArgs.ClearBeforeNext)
             ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
 
         NextElement?.Start();

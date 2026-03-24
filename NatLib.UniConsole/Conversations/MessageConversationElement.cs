@@ -26,11 +26,11 @@ public class MessageConversationElement : IConversationElement
         EntryCursorLocation = ConsoleRenderer.GetCheckpoint();
 
         ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageInBounds(reqArgs.Message);
+        ConsoleRenderer.WriteMessageLine(reqArgs.Message);
         if (reqArgs.WaitForUserKey)
         {
             ConsoleRenderer.WriteSeparator();
-            ConsoleRenderer.WriteMessageInBounds("Press any key to continue...");
+            ConsoleRenderer.WriteMessageLine("Press any key to continue...");
             ConsoleRenderer.WriteBottomBorder();
             Console.ReadKey(true);
         }

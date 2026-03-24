@@ -9,19 +9,18 @@ public struct RequestElementArgs<T>
     public Func<string> RetryMessage { get; set; } = () => "Exception. Unsuitable value.";
 
     /// <summary>
-    /// Defines either user can quit from value insertion. 
+    /// Defines either user can quit from inputting circle, or not.
     /// </summary>
     public bool CanBeQuit { get; set; } = false;
 
     /// <summary>
-    /// Provides a way of value validation.
-    /// Invokes when parsing succeed, right after. <br/>
-    /// When is not set, validation is skipped.
+    /// Defines a step of value validation, receive T as converted value, and should return validation result.
+    /// It is invoked,  
     /// </summary>
     public Func<T, bool>? ValidationDelegate { get; set; } = null;
 
     /// <summary>
-    /// Returns user input, converted to desired type. Invokes after value validation.
+    /// Provides a binding for value
     /// </summary>
     public Action<T>? ConvertedValueBinding { get; set; } = null;
 
@@ -37,34 +36,33 @@ public struct RequestElementArgs<T>
     public Action<bool>? InvocationStatusProvider { get; set; } = null;
 
     /// <summary>
-    /// If set - provides short reference for requested input.
+    /// Defines reference, that will be shown as description of input format, available range, ect.
     /// </summary>
     public IStringPresenter? ReferencePresenter { get; set; } = null;
 
     /// <summary>
-    /// Defines behavior before calling the next item, <br/>
-    /// true - clear this element.  <br/>
-    /// false - leave this element on screen.
+    /// Defines either element should be removed from screen before calling next element, or not.
     /// </summary>
-    public bool DistinctAfterUsage { get; set; } = false;
+    public bool ClearBeforeNext { get; set; } = false;
 
     /// <summary>
-    /// Defines behavior before calling quit element, <br/>
-    /// true - clear this element.  <br/>
-    /// false - leave this element on screen.
+    /// Defines either element should be removed from screen before calling quit element, or not.
     /// </summary>
-    public bool DistinctAfterQuit { get; set; } = false;
+    public bool ClearBeforeQuit { get; set; } = false;
 
+    /// <summary>
+    /// Defines either element should be removed from screen after it's child execution is over, or not.
+    /// </summary>
     public bool ClearAtTheEnd { get; set; } = true;
 
     /// <summary>
-    /// In normal quit terms, QuitElement is called first, but after its' execution
-    /// NextElement will be called.
-    /// To start completely new execution branch - set this property to true.
-    /// This will prevent starting NextElement, and will create a new execution branch.
+    /// Defines either QuitElement should be performed instead of next element when quit requested, or not.
     /// </summary>
-    public bool QuitElementOverridesNextElement { get; set; } = false;
+    public bool QuitCreatesExecutionBranch { get; set; } = false;
 
+    /// <summary>
+    /// Defines an element that will be executed when user requested quit.
+    /// </summary>
     public IConversationElement? QuitElement { get; set; } = null;
 
     public RequestElementArgs()
