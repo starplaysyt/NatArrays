@@ -121,6 +121,13 @@ public static class SpanCharUtils
         return Math.Min(obj.Length, destination.Length);
     }
 
+    /// <summary>
+    /// Tries to copy chars from read-only span to another span.
+    /// Works fine when destination is larger than obj (takes minimal length of two spans).
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="destination"></param>
+    /// <returns>Count of copied characters.</returns>
     public static int TryCopy(ReadOnlySpan<char> obj, Span<char> destination)
     {
         // FIXED: In special circumstances function may fail to put obj to destination

@@ -1,5 +1,6 @@
 ﻿using NatLib.UniConsole.Arguments;
 using NatLib.UniConsole.Conversations;
+using NatLib.UniConsole.Graphics;
 using NatLib.UniConsole.Interfaces;
 
 namespace NatLib.Debug;
@@ -101,7 +102,7 @@ public class Program
         // 				new MessageElementArgs
         // 				{
         // 					Message = "HeaderMessage",
-        // 					DistinctAfterUsage = false,
+        // 					ClearBeforeNext = false,
         // 					WaitForUserKey = false,
         // 					ClearAtTheEnd = false
         // 				},
@@ -113,21 +114,21 @@ public class Program
         // 	// 	requestArgs: new MessageElementArgs
         // 	// 	{
         // 	// 		Message = "TestMessage1",
-        // 	// 		DistinctAfterUsage = false,
+        // 	// 		ClearBeforeNext = false,
         // 	// 		WaitForUserKey = false
         // 	// 	},
         // 	// 	nextElement: new MessageConversationElement(
         // 	// 		new MessageElementArgs
         // 	// 		{
         // 	// 			Message = "TestMessage2",
-        // 	// 			DistinctAfterUsage = false,
+        // 	// 			ClearBeforeNext = false,
         // 	// 			WaitForUserKey = false, ClearAtTheEnd = false
         // 	// 		},
         // 	// 		new MessageConversationElement(
         // 	// 			new MessageElementArgs
         // 	// 			{
         // 	// 				Message = "TestMessage3",
-        // 	// 				DistinctAfterUsage = false,
+        // 	// 				ClearBeforeNext = false,
         // 	// 				WaitForUserKey = true
         // 	// 			}, 
         // 	// 		null)
@@ -146,14 +147,14 @@ public class Program
         // 			ValidationDelegate = val => val is < 10 and > 0,
         // 			ClearAtTheEnd = true,
         // 			ReferencePresenter = null,
-        // 			DistinctAfterUsage = false,
-        // 			DistinctAfterQuit = false,
-        // 			QuitElementOverridesNextElement = false,
+        // 			ClearBeforeNext = false,
+        // 			ClearBeforeQuit = false,
+        // 			QuitCreatesExecutionBranch = false,
         // 			QuitElement = new MessageConversationElement(
         // 				new MessageElementArgs
         // 				{
         // 					Message = "QuitMessage",
-        // 					DistinctAfterUsage = false,
+        // 					ClearBeforeNext = false,
         // 					WaitForUserKey = true,
         // 				}, 
         // 				null
@@ -163,7 +164,7 @@ public class Program
         // 			new MessageElementArgs
         // 			{
         // 				Message = "NextGlobalMessage",
-        // 				DistinctAfterUsage = false,
+        // 				ClearBeforeNext = false,
         // 				WaitForUserKey = true,
         // 			}, 
         // 			null
@@ -173,26 +174,32 @@ public class Program
         //
         // conversation.Run();
 
-        var val = "null";
-
-        var entry = new MessageConversationElement(
-            new MessageElementArgs
-            {
-                ClearAtTheEnd = true, DistinctAfterUsage = false, Message = "TestMessage1", WaitForUserKey = true
-            },
-            new MessageConversationElement(
-                new MessageElementArgs
-                {
-                    ClearAtTheEnd = true, DistinctAfterUsage = true, Message = "TestMessage2", WaitForUserKey = true
-                },
-                new ValueRequestConversationElement<string>(
-                    new RequestElementArgs<string>
-                    {
-                        Message = () => "TestMessage3", ConvertedValueBinding = value => val = value
-                    },
-                    null)
-            )
-        );
-        entry.Start();
+        // var val = "null";
+        //
+        // var entry = new MessageConversationElement(
+        //     new MessageElementArgs
+        //     {
+        //         ClearAtTheEnd = true, DistinctAfterUsage = false, Message = "TestMessage1", WaitForUserKey = true
+        //     },
+        //     new MessageConversationElement(
+        //         new MessageElementArgs
+        //         {
+        //             ClearAtTheEnd = true, DistinctAfterUsage = true, Message = "TestMessage2", WaitForUserKey = true
+        //         },
+        //         new ValueRequestConversationElement<string>(
+        //             new RequestElementArgs<string>
+        //             {
+        //                 Message = () => "TestMessage3", ConvertedValueBinding = value => val = value
+        //             },
+        //             null)
+        //     )
+        // );
+        // entry.Start();
+        
+        ConsoleRenderer.WriteTopBorder();
+        ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn");
+        ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
+                                              "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
+                                              "");
     }
 }
