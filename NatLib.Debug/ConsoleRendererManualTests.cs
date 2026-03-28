@@ -7,7 +7,7 @@ public static class ConsoleRendererManualTests
     public static void WriteMessageLinesTest()
     {
         ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageLine("Executing WriteMessageLines()");
+        ConsoleRenderer.WriteMessageLineSingle("Executing WriteMessageLines()");
         ConsoleRenderer.WriteSeparator();
         
         // Empty string
@@ -74,5 +74,75 @@ public static class ConsoleRendererManualTests
         
         ConsoleRenderer.WriteBottomBorder();
     }
-    
+
+    public static void WriteMessageLineIndexedTest()
+    {
+        ConsoleRenderer.WriteTopBorder();
+        ConsoleRenderer.WriteMessageLineSingle("Executing WriteMessageLineIndexed()");
+        ConsoleRenderer.WriteSeparator();
+        
+        // Empty string
+        ConsoleRenderer.WriteMessageLineIndexed("", 1);
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Short string
+        ConsoleRenderer.WriteMessageLineIndexed("test message", 1);
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Long string
+        ConsoleRenderer.WriteMessageLineIndexed("test message test message test message test message test message test message test message test", 1);
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Perfect string
+        ConsoleRenderer.WriteMessageLineIndexed("test message out of bounds test input value number and more val", 1);
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Long index with short string
+        ConsoleRenderer.WriteMessageLineIndexed("asdjknasjkdk", 100000);
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Long index with long string
+        ConsoleRenderer.WriteMessageLineIndexed("akjsndjanksdnnaksnkjdnkjajksndkjansjkdnkjanskndkkasjkdbjasdjabskjbdjk", 10000);
+        
+        ConsoleRenderer.WriteBottomBorder();
+    }
+
+    public static void WriteMessageLineWrappedTest()
+    {
+        ConsoleRenderer.WriteTopBorder();
+        ConsoleRenderer.WriteMessageLineSingle("Executing WriteMessageLineWrapped()");
+        ConsoleRenderer.WriteSeparator();
+        
+        // Empty string
+        ConsoleRenderer.WriteMessageLineWrapped("");
+        
+        ConsoleRenderer.WriteSeparator();
+        
+        // Short string
+        ConsoleRenderer.WriteMessageLineWrapped("anjsndjkn");
+        ConsoleRenderer.WriteSeparator();
+        
+        // Long string
+        ConsoleRenderer.WriteMessageLineWrapped("kansdnjansjkndjknajknsndkjnaskjnkjdnkjanjksndjknjkasnkdnkjanjksnkjdnkanskjdnjkanskjdnkj");
+        ConsoleRenderer.WriteSeparator();
+        
+        // Exact string 
+        ConsoleRenderer.WriteMessageLineWrapped("kansdnjansjkndjknajknsndkjnaskjnkjdnkjanjksndjknjkasnkdnkjanjksnkn");
+        ConsoleRenderer.WriteSeparator();
+        
+        // Long long string
+        ConsoleRenderer.WriteMessageLineWrapped("ajnsjdnnakjnskdnjknaknskjdnjkaskjdn" +
+                                                "ajknsjdnkannskdjknakjsndknkjanksndk" +
+                                                "kajnskdjnakjsndknkanksjndjknajknsjk" +
+                                                "nanskdnjkanjknsdkjnkjanksjndjknakjn" +
+                                                "ajnskjdnkanskndkjaknsjkdnjknajknskd" +
+                                                "kjansjdnajknsjkdnkjankjsndjkakjsnda" +
+                                                "ajknsjdjnaksdnk");
+        ConsoleRenderer.WriteBottomBorder();
+    }
 }

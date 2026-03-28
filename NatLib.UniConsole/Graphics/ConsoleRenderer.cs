@@ -113,7 +113,7 @@ public static class ConsoleRenderer
     /// <summary>
     /// Writes the message line, surrounded by side borders, with the global width, defined by Configuration.
     /// </summary>
-    public static void WriteMessageLine(ReadOnlySpan<char> message)
+    public static void WriteMessageLineSingle(ReadOnlySpan<char> message)
     {
         // INFO: Refactored to stack allocation method. +-3300ms -> 319ms (100_000 calls)
 
@@ -170,20 +170,49 @@ public static class ConsoleRenderer
         Writer.Write(chars);
     }
 
+    /// <summary>
+    /// Writes the message line with global width, defined by Configuration,
+    /// with added index with a dot 
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="index"></param>
+    public static void WriteMessageLineIndexed(ReadOnlySpan<char> message, int index)
+    {
+        var (side, center, width) = Configuration.DeconstructMiddle();
+        var indexString = index.ToString();
+        
+        Span<char> chars = stackalloc char[width];
+
+        chars[0] = side;
+        chars[1] = center;
+        var copied = SpanCharUtils.TryCopy(indexString, chars[2..]);
+        chars[2 + copied] = '.';
+        chars[2 + copied + 1] = center;
+        var copiedMessage = SpanCharUtils.TryCopy(message, chars[(4 + copied)..^2]);
+        if (message.Length < width - copied - 5)
+            chars[(4 + copied + copiedMessage)..^2].Fill(center);
+        else
+            chars[^5..^2].Fill('.');
+        chars[^2] = center;
+        chars[^1] = side;
+        
+        Writer.WriteLine(chars);
+    }
+
     public static void WriteMessageLines(ReadOnlySpan<char> message)
     {
         var (side, center, width) = Configuration.DeconstructMiddle();
         // One \n splits line in 2 lines
         var lineCount = message.Count('\n') + 1;
         width++;
-        
+
         Span<char> chars = stackalloc char[width * lineCount];
-        
+
         // Last absolute position in message
         var lastMessageIndex = 0;
         // Last absolute position in chars
         var lastCharsIndex = 0;
-        
+
         for (var i = 0; i < lineCount; i++)
         {
             var messagePtr = message[lastMessageIndex..];
@@ -201,8 +230,16 @@ public static class ConsoleRenderer
             lastCharsIndex += width;
             lastMessageIndex += currentLineIndex + 1;
         }
-        
+
         Writer.Write(chars);
+    }
+
+    public static void WriteMessageLines(string[] lines)
+    {
+        foreach (var line in lines)
+        {
+            WriteMessageLineSingle(line);
+        }
     }
 
     /// <summary>
@@ -245,12 +282,9 @@ public static class ConsoleRenderer
     public static void WriteMenu(string title, string[] menuItems)
     {
         WriteTopBorder();
-        WriteMessageLine(title);
+        WriteMessageLineSingle(title);
         WriteSeparator();
-        foreach (var item in menuItems)
-        {
-            WriteMessageLine(item);
-        }
+        WriteMessageLines(menuItems);
         WriteBottomBorder();
     }
 
@@ -263,10 +297,10 @@ public static class ConsoleRenderer
     public static void WriteNumeratedMenu(string title, string[] menuItems, int numerationStart = 1)
     {
         WriteTopBorder();
-        WriteMessageLine(title);
+        WriteMessageLineSingle(title);
         WriteSeparator();
         for (var i = 0; i < menuItems.Length; i++)
-            WriteMessageLine((i + numerationStart) + ". " + menuItems[i]);
+            WriteMessageLineSingle((i + numerationStart) + ". " + menuItems[i]);
         WriteBottomBorder();
     }
 
@@ -274,10 +308,10 @@ public static class ConsoleRenderer
     /// Writes the bordered message with using Configuration characters with the global width.
     /// </summary>
     /// <param name="message">Given message.</param>
-    public static void WriteMessage(string message)
+    public static void WriteMessageSingle(string message)
     {
         WriteTopBorder();
-        WriteMessageLine(message);
+        WriteMessageLineSingle(message);
         WriteBottomBorder();
     }
 
@@ -285,11 +319,11 @@ public static class ConsoleRenderer
     /// Writes the bordered message with several lines inside with using Configuration characters with the global width.
     /// </summary>
     /// <param name="lines">Given message lines.</param>
-    public static void WriteMessageMultiline(string[] lines)
+    public static void WriteMessage(string[] lines)
     {
         WriteTopBorder();
         foreach (var line in lines)
-            WriteMessageLine(line);
+            WriteMessageLineSingle(line);
         WriteBottomBorder();
     }
 
@@ -298,7 +332,7 @@ public static class ConsoleRenderer
     /// and performs word-wrap when needed.
     /// </summary>
     /// <param name="message">Given message.</param>
-    public static void WriteMessageWrap(ReadOnlySpan<char> message)
+    public static void WriteMessageWrapped(ReadOnlySpan<char> message)
     {
         WriteTopBorder();
         WriteMessageLineWrapped(message);
