@@ -54,7 +54,7 @@ public struct RequestElementArgs<T>
     /// Defines either element should be removed from screen after it's child execution is over, or not.
     /// </summary>
     public bool ClearAtTheEnd { get; set; } = true;
-
+    
     /// <summary>
     /// Defines either QuitElement should be performed instead of next element when quit requested, or not.
     /// </summary>

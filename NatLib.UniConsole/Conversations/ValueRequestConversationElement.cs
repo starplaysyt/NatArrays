@@ -24,12 +24,12 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
         var reqArgs = RequestArgs;
         EntryCursorLocation = ConsoleRenderer.GetCheckpoint();
         ConsoleRenderer.WriteTopBorder();
-        ConsoleRenderer.WriteMessageLine(reqArgs.Message());
+        ConsoleRenderer.WriteMessageLineSingle(reqArgs.Message());
 
         if (reqArgs.ReferencePresenter != null) // Reference generation
         {
             ConsoleRenderer.WriteSeparator();
-            reqArgs.ReferencePresenter.PresentString();
+            ConsoleRenderer.WriteMessageLines(reqArgs.ReferencePresenter.PresentString());
         }
 
         ConsoleRenderer.WriteBottomBorder();
@@ -52,10 +52,10 @@ public class ValueRequestConversationElement<T> : IConversationElement where T :
         else
         {
             ConsoleRenderer.WriteTopBorder();
-            ConsoleRenderer.WriteMessageLine(reqArgs.RetryMessage());
+            ConsoleRenderer.WriteMessageLineSingle(reqArgs.RetryMessage());
             ConsoleRenderer.WriteSeparator();
 
-            ConsoleRenderer.WriteMessageLine(reqArgs.CanBeQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
+            ConsoleRenderer.WriteMessageLineSingle(reqArgs.CanBeQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
             ConsoleRenderer.WriteBottomBorder();
             var key = Console.ReadKey(true).Key;
 

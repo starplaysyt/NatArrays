@@ -201,6 +201,10 @@ public class Program
         // ConsoleRenderer.WriteMessageWrap("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" +
         //                                       "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmn" + "");
         
-        ConsoleRendererManualTests.WriteMessageLinesTest();
+        // ConsoleRendererManualTests.WriteMessageLinesTest();
+        
+        // ConsoleRendererManualTests.WriteMessageLineWrappedTest();
+        
+        ConversationSystemManualTests.MultipleChoiceConversationTest();
     }
 }
