@@ -205,6 +205,8 @@ public class Program
         
         // ConsoleRendererManualTests.WriteMessageLineWrappedTest();
         
-        ConversationSystemManualTests.MultipleChoiceConversationTest();
+        // ConversationSystemManualTests.MultipleChoiceConversationTest();
+        
+        LoggingManualTests.RunLoggingManualTests();
     }
 }
