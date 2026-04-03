@@ -13,6 +13,8 @@ public class ConsoleLogger(string loggerName)
     public ConsoleLogger() : this(Assembly.GetExecutingAssembly().GetName().Name ?? "Logger") { }
     
     public ConsoleLogger(Type loggerType) : this(loggerType.Name) { }
+    
+    public ConsoleLogger(object obj) : this(obj.GetType().Name) { }
 
     public void Log(LogLevel level, string message, Exception? exception = null)
     {
