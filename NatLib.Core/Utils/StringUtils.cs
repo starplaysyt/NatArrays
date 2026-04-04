@@ -148,4 +148,26 @@ public static class StringUtils
             (array, lengths, separator, alignment),
             SpanCharUtils.WrapJoinSpan);
     }
+    
+    /// <summary>
+    /// Returns default value when given string is null or empty.
+    /// Otherwise, returns given string.
+    /// Uses string.IsNullOrEmpty indicator, that is simple semantics-improvement method.
+    /// </summary>
+    /// <param name="str"> The string to test.</param>
+    /// <param name="defaultValue"> A value that will be returned when str is null or empty.</param>
+    /// <returns> Given str or defaultValue based on result of string.IsNullOrEmpty().</returns>
+    public static string IfNullOrEmpty(this string? str, string defaultValue) =>
+        string.IsNullOrEmpty(str) ? defaultValue : str;
+    
+    /// <summary>
+    /// Returns default value when given string is null or whitespace.
+    /// Otherwise, returns given string.
+    /// Uses string.IsNullOrWhiteSpace indicator, that is simple semantics-improvement method.
+    /// </summary>
+    /// <param name="str"> The string to test.</param>
+    /// <param name="defaultValue"> A value that will be returned when str is null or whitespace.</param>
+    /// <returns> Given str or defaultValue based on result of string.IsNullOrWhiteSpace().</returns>
+    public static string IfNullOrWhitespace(this string? str, string defaultValue) =>
+        string.IsNullOrWhiteSpace(str) ? defaultValue : str;
 }
