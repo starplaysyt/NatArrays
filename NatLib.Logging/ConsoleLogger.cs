@@ -1,20 +1,17 @@
-using System.Reflection;
-
 namespace NatLib.Logging;
 
-public class ConsoleLogger(string loggerName)
+public class ConsoleLogger
 {
-    public static ConsoleLogger Instance { get; } = new ConsoleLogger();
+    public static ConsoleLogger Instance { get; } = LoggerFactory.Create();
 
     public LoggingConfiguration Config { get; set; } = LoggingConfiguration.Instance;
 
-    public string LoggerName = loggerName;
+    public string LoggerName;
     
-    public ConsoleLogger() : this(Assembly.GetExecutingAssembly().GetName().Name ?? "Logger") { }
-    
-    public ConsoleLogger(Type loggerType) : this(loggerType.Name) { }
-    
-    public ConsoleLogger(object obj) : this(obj.GetType().Name) { }
+    internal ConsoleLogger(string loggerName)
+    {
+        LoggerName = loggerName;
+    }
 
     public void Log(LogLevel level, string message, Exception? exception = null)
     {
@@ -91,6 +88,12 @@ public class ConsoleLogger(string loggerName)
     public void LogErrorAndThrow(string message, Exception exception)
     {
         LogError(message, exception);
+        throw exception;
+    }
+
+    public void LogFatalAndThrow(string message, Exception exception)
+    {
+        LogFatal(message, exception);
         throw exception;
     }
 }
