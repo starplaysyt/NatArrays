@@ -48,7 +48,7 @@ Caption on the picture - "Vibecoded".
 
 Why is it here? I don't know. I hope this photo at least makes you laugh, in our world full of hopelessness, sodomy, violence, cringe, and idiocy. And yes, I'm still talking about programming, and I personally consider Rust's OOP to be a form of violence.
 
-```---
+---
 
 ## Safety Notes
 
