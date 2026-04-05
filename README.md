@@ -1,98 +1,86 @@
-# NatLib 
+# NatLib
 
 ![Status](https://img.shields.io/badge/status-WIP-yellow)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue)
 ![DotNet](https://img.shields.io/badge/.NET-10.0-purple)
 ![License](https://img.shields.io/badge/license-MIT%20with%20Attribution-green)
 
-**NatLib** is an utility library. And a part of it -
+## About
 
-A **high-performance, unmanaged array** implementation for C# that allows direct control over memory allocation, reallocation, and deallocation using `NativeMemory`.  
-Designed for systems programming, game engines, and any low-level environment where performance and control matter more than safety.
-
----
-
-## Features
-
-- **Manual memory management** — full control over allocation and freeing  
--  **True unmanaged array** — stored outside the CLR heap  
--  **Maximum performance** — no GC overhead, ideal for tight loops  
--  **Optional initialization** — choose whether to run constructors for your structs  
--  **Safe API boundaries** — explicit `Allocate()`, `Reallocate()`, and `Deallocate()` calls  
--  **Span view support** — lightweight view with pointer access
+**NatLib** is a general-purpose library that complements the functionality of the C# BCL by improving the semantics
+and mechanics of interaction with the programming language as a whole. Here, I bring together everything that can be
+unified for my projects, including the implementation of basic functions, structures, and even entire architectural
+patterns. Overall, it contains a set of relatively simple implementations to achieve clear goals (my goals)
+in my projects.
 
 ---
 
-## Concept
+## What's inside
 
-Unlike regular C# arrays, `NatArrays` does **not** live on the managed heap.  
-You control exactly when and how memory is allocated and released — similar to `malloc`, `realloc`, and `free` in C/C++.
-
-> This makes it perfect for performance-critical code, native interop, graphics, ECS systems, or custom memory pools.
-
----
-
-## Initialization Control
-
-You decide whether constructors for your structs are called.
-
-```csharp
-// Allocates memory only (uninitialized)
-array.Allocate(256);
-
-// Allocates memory and calls 'new T()' for each element
-array.AllocateDefault(256);
-```
-
-You can also reallocate an existing array while preserving old values:
-
-```csharp
-array.Reallocate(512);         // Resizes raw memory
-array.ReallocateDefault(512);  // Resizes and calls constructors for new slots
-```
+- **NatLib.Arrays** - implementation of arrays in unmanaged heap, can serve different purposes, developed for using in
+  everything connected to rendering graphics.
+- **NatLib.Benchmarks** - not a module, a playground for performance testings for me.
+- **NatLib.Core** - general part of the library. Contains unified structures, reflection helpers, utility classes what
+  extends functionality of BCL, or provide direct control for some operations.
+- **NatLib.DataManagement** - currently empty due to my laziness, unwillingness to deal with ancient shitlegasy and
+  my own shitcode. There should have been that picture of a man with a plumbing hose unloading shit from a Docker container
+  with the caption "Vibecoded", maybe I'll put it here, I don't know
+- **NatLib.Debug** - not a module, like the name saying - it's executable for debug. Why is it here? Because sometimes
+  I need to have the same Program.cs file on laptop and computer, to sync my work, you know?
+- **NatLib.ECS** - currently empty, but the code is completed, now I want to extend it in some ways, so it will be here
+  pretty soon.
+- **NatLib.Logging** - provides simple logging operations, somewhere where I don't want to use popular libraries.
+- **NatLib.Reactive** - my try to implement binding context based on INotifyPropertyChanged and ref-based algorythm.
+  Currently not released.
+- **NatLib.Server** - there should be basic implementations of services for ASP.NET, and i also have them, but they are
+  not ready for release, and I wanna deal with other stuff right now.
+- **NatLib.Tests** - not a module, just a testing playground with xUnit.
+- **NatLib.UniConsole** - contains completed and extendable console-style conversation system and provides ways of
+  "rendering" something in console(like lines, message-boxed, and other unicode-art stuff)
 
 ---
+
+## That plumber picture i thought i lost
+
+Caption on the picture - "Vibecoded".
+
+![vibecoded.jpg](assets/vibecoded.jpg)
+
+Why is it here? I don't know. I hope this photo at least makes you laugh, in our world full of hopelessness, sodomy, violence, cringe, and idiocy. And yes, I'm still talking about programming, and I personally consider Rust's OOP to be a form of violence.
+
+```---
 
 ## Safety Notes
 
-- These arrays are unsafe — you are responsible for correct usage.
-- Never use spans or pointers after a Reallocate() or Deallocate() call.
-- **Always call Dispose()** or use a using block to avoid memory leaks.
+**IF YOU EVER** thought about **using this** somewhere likely **named as "Release" or "Production"** - **STAY AWAY!** Seriously, you can find libraries lot better than this(but not with unmanaged arrays separately, btw..). USE ON YOUR OWN RISK, every day i find exceptions here, and sometimes i have an urge to implement kind of new architectural pattern out there, so even I sometimes have compatibility problems. And that's why it will never be on NuGet - I don't want people to struggle.
 
 ---
 
 ## Requirements
 
-- **.NET 8.0** or newer (currently built for .NET 9)
-- unsafe context enabled in your project
-
-**How to?**
-```xml
-<PropertyGroup>
-  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-</PropertyGroup>
-```
-(when you look for such lowlevel lib, you probably know already how to enable unsafe context in project. Ask LLM if not)) )
+- **.NET 10**
+- a stable nervous system
+- a set of high alcohol drinks, personally I can recommend absinthe, cognac, russian vodka, or pure medical alcohol (the kind you use to clean keyboards or wipe blood off the carpet after deadly duels with Python or Javascript developers)
 
 ---
 
 ## Graph
-Here is a simple graph that shows how it all works.
 
-(idk how that might help, but i'll just leave it here, it looks cool)
+Here is a simple graph that shows how it all works.
 
 ```mermaid
 graph LR;
-  A[Allocate] --> B[Use Pointer/Span]
-  B --> C[Reallocate]
-  B --> D[Deallocate]
+  A[Wake up] --> B[Go to work]
+  B --> C[Work hard]
+  B --> D[Get mental illness]
   C --> B
-  D --> X[Disposed]
+  D --> X[Dispose yourself]
 ```
-
 ---
 
 ## License
+
+Remember what I told about using this in production? Read it again. If you still want to - read that text below. Maybe it'll change your mind.
 
 ```
 MIT License with Attribution Requirement
