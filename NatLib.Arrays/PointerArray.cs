@@ -62,6 +62,16 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     #endregion
 
     /// <summary>
+    /// Gets <c>T*</c> pointer on allocated pointer array.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"> Throws when tried to get pointer on a deallocated array.</exception>
+    /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in the context.</remarks>
+    public unsafe T* AsPointer()
+    {
+        return !IsAllocated ? throw new InvalidOperationException("Array is not allocated.") : Pointer;
+    }
+
+    /// <summary>
     /// Gets <c>Span&lt;T&gt;</c> for an allocated pointer array. 
     /// </summary>
     /// <exception cref="InvalidOperationException"> Throws when tried to get span from a deallocated array.</exception>
