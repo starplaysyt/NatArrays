@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NatLib.Arrays;
@@ -61,15 +62,29 @@ public sealed class PointerArray<T> : IDisposable where T : unmanaged
     }
     #endregion
 
-    /// <summary>
-    /// Gets <c>T*</c> pointer on allocated pointer array.
-    /// </summary>
-    /// <exception cref="InvalidOperationException"> Throws when tried to get pointer on a deallocated array.</exception>
-    /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in the context.</remarks>
+
     public unsafe T* AsPointer()
     {
         return !IsAllocated ? throw new InvalidOperationException("Array is not allocated.") : Pointer;
     }
+    /// <summary>
+    /// Gets <c>T*</c> pointer on allocated pointer array.
+    /// </summary>
+    /// <param name="index"> Index of pointer that should be returned.</param>
+    /// <exception cref="InvalidOperationException"> Throws when tried to get pointer on a deallocated array.</exception>
+    /// <remarks> Unsafe when use reallocate/deallocate/allocate when PointerSpan is in the context.</remarks>
+    public unsafe T* GetPtr(int index = 0)
+    {
+        if (!IsAllocated) 
+            throw new InvalidOperationException("Array is not allocated.");
+        if (index < 0 || index >= Length) 
+            throw new IndexOutOfRangeException($"Index {index} is out of range {Length}.");
+        
+        return GetPtrUnsafe(index);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe T* GetPtrUnsafe(int index = 0) => &Pointer[index];
 
     /// <summary>
     /// Gets <c>Span&lt;T&gt;</c> for an allocated pointer array. 
