@@ -34,6 +34,11 @@ public sealed class PointerList<T> : IDisposable where T : unmanaged
 
         Capacity = resultCapacity;
     }
+    
+    public unsafe T* AsPointer()
+    {
+        return Pointer == null ? throw new InvalidOperationException("Array is not allocated.") : Pointer;
+    }
 
     public PointerList() { }
 
