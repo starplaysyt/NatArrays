@@ -207,6 +207,8 @@ public class Program
         
         // ConversationSystemManualTests.MultipleChoiceConversationTest();
         
-        LoggingManualTests.RunLoggingManualTests();
+        // LoggingManualTests.RunLoggingManualTests();
+        
+        PointerListDebugTests.Run();
     }
 }
