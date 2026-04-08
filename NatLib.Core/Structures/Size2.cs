@@ -58,6 +58,12 @@ public struct Size2 : IEquatable<Size2>
     public static Size2 operator -(Size2 a, Size2 b) => new(a.Value - b.Value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Size2 operator +(Size2 a, float s) => new(a.Value.X + s, a.Value.Y + s);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Size2 operator -(Size2 a, float s) => new(a.Value.X - s, a.Value.Y - s);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Size2 operator *(Size2 a, float s) => new(a.Value * s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

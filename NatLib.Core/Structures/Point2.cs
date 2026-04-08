@@ -22,38 +22,28 @@ public struct Point2 : IEquatable<Point2>
     // --- Properties ---
 
     public float X
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value.X;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => Value.X = value;
-    }
+    { [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => Value.X;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      set => Value.X = value; }
 
     public float Y
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value.Y;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set => Value.Y = value;
-    }
+    { [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => Value.Y;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      set => Value.Y = value; }
 
     public float Length
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value.Length();
-    }
+    { [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => Value.Length(); }
 
     public float LengthSquared
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value.LengthSquared();
-    }
+    { [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => Value.LengthSquared(); }
 
     public Point2 Normalized
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => new(Vector2.Normalize(Value));
-    }
+    { [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => new(Vector2.Normalize(Value)); }
 
     // --- Operators ---
 
@@ -62,6 +52,12 @@ public struct Point2 : IEquatable<Point2>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Point2 operator -(Point2 a, Point2 b) => new(a.Value - b.Value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2 operator +(Point2 a, float s) => new(a.X + s, a.Y + s);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point2 operator -(Point2 a, float s) => new(a.X - s, a.Y - s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Point2 operator *(Point2 a, float s) => new(a.Value * s);
