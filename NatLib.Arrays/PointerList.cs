@@ -62,6 +62,21 @@ public sealed class PointerList<T> : IDisposable where T : unmanaged
         Reallocate(capacity);
     }
 
+    public void AddSeveral(Span<T> elements)
+    {
+        var currentLength = Length;
+        if (Length + elements.Length > Capacity)
+            Reallocate(Length + elements.Length);
+
+        unsafe
+        {
+            Span<T> span = new Span<T>(&Pointer[Length], elements.Length);
+            elements.CopyTo(span);
+            
+            Length += elements.Length;
+        }
+    }
+
     public void Add(T value)
     {
         if (Length == Capacity)

@@ -46,5 +46,32 @@ public static class PointerListDebugTests
         list.Clear();
         
         Console.ReadKey();
+        
+        
+        list.AddSeveral([1, 2, 3, 4, 5]);
+        
+        span = list.AsSpan();
+        
+        foreach (var i in span)
+        {
+            Console.Write(i + " ");
+        }
+
+        Console.WriteLine();
+        
+        list.Delete(4);
+        
+        list.AddSeveral([1, 2, 3, 4, 5]);
+        
+        list.Delete(0);
+        
+        span = list.AsSpan();
+        
+        foreach (var i in span)
+        {
+            Console.Write(i + " ");
+        }
+        
+        Console.WriteLine($"CAP: {list.Capacity} LEN: {list.Length}");
     }
 }
