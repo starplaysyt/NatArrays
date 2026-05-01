@@ -23,7 +23,7 @@ public class MultipleChoiceConversationElement : IConversationElement
         GOTO_WRITING_STARTING:
         
         ConsoleRenderer.WriteNumeratedMenu(
-            choiceArgs.ChoicesTitle(), ChoicesTitles);
+            choiceArgs.OnTitle(), ChoicesTitles);
         
         var insertCursorPosition = ConsoleRenderer.GetCheckpoint();
         int inputChoice;
@@ -41,12 +41,12 @@ public class MultipleChoiceConversationElement : IConversationElement
             inputString =
                 ConsoleRenderer.ReadLine();
 
-        choiceArgs.RawUserInputProvider?.Invoke(inputString);
+        choiceArgs.RawInputObserver?.Invoke(inputString);
 
         if (int.TryParse(inputString, out inputChoice) && inputChoice > 0 && inputChoice <= ChoicesTitles.Length)
         {
-            choiceArgs.InvocationStatusProvider?.Invoke(true);
-            choiceArgs.ChoiceIndexProvider?.Invoke(inputChoice);
+            choiceArgs.StatusObserver?.Invoke(ExecutionStatus.Completed);
+            choiceArgs.ChoiceObserver?.Invoke(inputChoice);
 
             if (choiceArgs.ClearBeforeChoice)
                 ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
@@ -65,27 +65,27 @@ public class MultipleChoiceConversationElement : IConversationElement
         else
         {
             ConsoleRenderer.WriteTopBorder();
-            ConsoleRenderer.WriteMessageLineSingle(choiceArgs.RetryMessage());
+            ConsoleRenderer.WriteMessageLineSingle(choiceArgs.RetryMessage(inputString));
             ConsoleRenderer.WriteSeparator();
-            ConsoleRenderer.WriteMessageLineSingle(choiceArgs.CanBeQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
+            ConsoleRenderer.WriteMessageLineSingle(choiceArgs.CanQuit ? "Press any key to retry, or Space key to leave..." : "Press any key to retry...");
             ConsoleRenderer.WriteBottomBorder();
 
             var key = ConsoleRenderer.ReadConsoleKey(true);
             
-            if (key != ConsoleKey.Spacebar || !choiceArgs.CanBeQuit)
+            if (key != ConsoleKey.Spacebar || !choiceArgs.CanQuit)
             {
                 ConsoleRenderer.GotoCheckpoint(insertCursorPosition);
                 goto GOTO_INPUT_STARTING;
             }
             
-            choiceArgs.InvocationStatusProvider?.Invoke(false);
+            choiceArgs.StatusObserver?.Invoke(ExecutionStatus.QuitExecuting);
             
             if (choiceArgs.ClearBeforeQuit)
                 ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);
             
             choiceArgs.QuitElement?.Start();
             
-            if (choiceArgs.QuitCreatesExecutionBranch)
+            if (choiceArgs.NewBranchOnQuit)
             {
                 if (choiceArgs.ClearAtTheEnd)
                     ConsoleRenderer.GotoCheckpoint(EntryCursorLocation);

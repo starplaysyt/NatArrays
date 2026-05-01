@@ -209,6 +209,8 @@ public class Program
         
         // LoggingManualTests.RunLoggingManualTests();
         
-        PointerListDebugTests.Run();
+        // PointerListDebugTests.Run();
+        
+        PersistenceDebug.Run();
     }
 }

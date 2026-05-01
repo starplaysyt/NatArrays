@@ -2,16 +2,13 @@ using NatLib.UniConsole.Interfaces;
 
 namespace NatLib.UniConsole.Arguments;
 
-public struct ChoiceElementArgs
+public class ChoiceElementArgs
 {
-    public Func<string> ChoicesTitle = () => "Choose a value";
+    public Func<string> OnTitle = () => "Choose a value";
     
-    public Func<string> RetryMessage { get; set; } = () => "Exception. Unsupported choice.";
+    public Func<string, string> RetryMessage { get; set; } = (userInput) => $"Line {userInput} is not a valid choice.";
     
-    /// <summary>
-    /// 
-    /// </summary>
-    public bool CanBeQuit { get; set; } = true;
+    public bool CanQuit { get; set; } = false;
     
     /// <summary>
     /// Defines an element that will be executed when user requested quit.
@@ -21,23 +18,23 @@ public struct ChoiceElementArgs
     /// <summary>
     /// Defines either QuitElement should be performed instead of next element when quit requested, or not.
     /// </summary>
-    public bool QuitCreatesExecutionBranch { get; set; } = false;
+    public bool NewBranchOnQuit { get; set; } = false;
     
     /// <summary>
     /// Provides status information about execution - <br/>
     /// either enter succeed (true), or user quit (false)
     /// </summary>
-    public Action<bool>? InvocationStatusProvider { get; set; }
+    public Action<ExecutionStatus>? StatusObserver { get; set; }
     
     /// <summary>
     /// Provides user-selected index.
     /// </summary>
-    public Action<int>? ChoiceIndexProvider { get; set; }
+    public Action<int>? ChoiceObserver { get; set; }
     
     /// <summary>
     /// Returns user input as it is. Invokes right after user input.
     /// </summary>
-    public Action<string>? RawUserInputProvider { get; set; }
+    public Action<string>? RawInputObserver { get; set; }
     
     /// <summary>
     /// Defines either element should be removed from screen before calling next element, or not.
@@ -48,7 +45,7 @@ public struct ChoiceElementArgs
     /// Defines either element should be removed from screen before calling chosen element, or not.
     /// </summary>
     public bool ClearBeforeChoice { get; set; } = false;
-
+    
     /// <summary>
     /// Defines either element should be removed from screen before calling quit element, or not.
     /// </summary>
