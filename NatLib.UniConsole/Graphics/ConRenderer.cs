@@ -62,15 +62,20 @@ public class ConRenderer : IRenderer<ConsoleColorExt>
 
     public void WriteFixed(ReadOnlySpan<char> str, int width)
     {
+        if (width < 0) throw new ArgumentOutOfRangeException(
+                nameof(width), "Value should be greater than or equal to zero.");
         Span<char> chars = stackalloc char[width];
         var empty = Configuration.EmptyBlock;
 
         var strLen = Math.Min(str.Length, width);
         str[..strLen].CopyTo(chars);
-        if (str.Length < width)
+        if (str.Length <= width)
             chars[str.Length..width].Fill(empty);
         else
-            chars[^3..].Fill('.');
+        {
+            var dotCount = Math.Min(width, 3);
+            chars[^dotCount..].Fill('.');
+        }
 
         Writer.Write(chars);
     }
@@ -79,6 +84,8 @@ public class ConRenderer : IRenderer<ConsoleColorExt>
     {
         var (left, center, right, width) = Configuration.DeconstructTop();
         width = dWidth ?? width;
+        if (width < 2) throw new ArgumentOutOfRangeException(
+                nameof(width), "WriteTopBorder cannot be executed when width is less than 2.");
         
         Span<char> chars = stackalloc char[width];
 
@@ -93,13 +100,20 @@ public class ConRenderer : IRenderer<ConsoleColorExt>
     {
         var (side, center, width) = Configuration.DeconstructMiddle();
         width = dWidth ?? width;
+        if (width < 4) throw new ArgumentOutOfRangeException(
+            nameof(width), "WriteMessageLineSingle cannot be executed when width is less than 4.");
+        
         Span<char> chars = stackalloc char[width];
 
         var strLen = Math.Min(str.Length, width - 4);
 
         str[..strLen].CopyTo(chars[2..]);
         chars.Slice(strLen + 2, width - strLen - 2).Fill(center);
-        if (str.Length > width - 4) chars[(width - 5)..^2].Fill('.');
+        if (str.Length > width - 4)
+        {
+            var dotCount = Math.Min(strLen, 3);
+            chars[^(dotCount + 2)..^2].Fill('.');
+        }
 
         chars[0] = side;
         chars[1] = center;
@@ -112,6 +126,9 @@ public class ConRenderer : IRenderer<ConsoleColorExt>
     {
         var (side, center, width) = Configuration.DeconstructMiddle();
         width = dWidth ?? width;
+        if (width < 5) throw new ArgumentOutOfRangeException(
+            nameof(width), "WriteMessageLineSingle cannot be executed when width is less than 5.");
+        
         var lineWidth = width - 4; // Length of content for one single line
         var linesCount = message.Length / lineWidth;
 
