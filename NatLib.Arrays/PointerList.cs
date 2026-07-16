@@ -5,59 +5,72 @@ namespace NatLib.Arrays;
 
 public sealed class PointerList<T> : IDisposable where T : unmanaged
 {
-    internal unsafe T* Pointer = null;
+    private unsafe T* _pointer = null;
 
-    public int Length { get; private set; } = 0;
+    public int Length { get; private set; }
 
-    public int Capacity { get; private set; } = 0;
+    public int Capacity { get; private set; }
 
     public T this[int index]
     { get
       { if (index < 0 || index >= Length)
             throw new IndexOutOfRangeException();
-        return UnsafeGet(index); }
+          return UnsafeGet(index); }
       set
       { if (index < 0 || index >= Length)
             throw new IndexOutOfRangeException();
-        UnsafeSet(index, value); } }
+          UnsafeSet(index, value); } }
 
     private unsafe void Reallocate(int resultCapacity)
     {
-        if (Pointer == null)
+        if (_pointer == null)
         {
-            Pointer = (T*)NativeMemory.Alloc((nuint)resultCapacity * (nuint)sizeof(T));
+            _pointer = (T*)NativeMemory.Alloc((nuint)resultCapacity * (nuint)sizeof(T));
             Capacity = resultCapacity;
             return;
         }
 
-        Pointer = (T*)NativeMemory.Realloc(Pointer, (nuint)resultCapacity * (nuint)sizeof(T));
+        _pointer = (T*)NativeMemory.Realloc(_pointer, (nuint)resultCapacity * (nuint)sizeof(T));
 
         Capacity = resultCapacity;
-    }
-    
-    public unsafe T* AsPointer()
-    {
-        return Pointer == null ? throw new InvalidOperationException("Array is not allocated.") : Pointer;
     }
 
     public PointerList() { }
 
     public PointerList(int capacity)
     {
-        Capacity = capacity;
         Reallocate(capacity);
+    }
+    
+    public void TrimExcess()
+    {
+        if (Length == 0)
+        {
+            Clear();
+            return;
+        }
+
+        if (Length < Capacity)
+            Reallocate(Length);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe T UnsafeGet(int index) => Pointer[index];
+    public unsafe T UnsafeGet(int index) => _pointer[index];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void UnsafeSet(int index, T value) => Pointer[index] = value;
+    public unsafe void UnsafeSet(int index, T value) => _pointer[index] = value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe ref T UnsafeRef(int index) => ref Pointer[index];
+    public unsafe ref T UnsafeRef(int index) => ref _pointer[index];
 
-    public unsafe Span<T> AsSpan() => new(Pointer, Length);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe Span<T> AsSpan() => new(_pointer, Length);
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe T* AsPointer() => _pointer;
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe T* AsPointer(int index) => &_pointer[index];
 
     public void Reserve(int capacity)
     {
@@ -75,7 +88,7 @@ public sealed class PointerList<T> : IDisposable where T : unmanaged
 
         unsafe
         {
-            Span<T> span = new Span<T>(&Pointer[Length], elements.Length);
+            var span = new Span<T>(&_pointer[Length], elements.Length);
             elements.CopyTo(span);
             
             Length += elements.Length;
@@ -85,7 +98,7 @@ public sealed class PointerList<T> : IDisposable where T : unmanaged
     public void Add(T value)
     {
         if (Length == Capacity)
-            Reallocate(Capacity + 20);
+            Reallocate(Math.Max(Capacity * 2, Capacity + 20));
 
         UnsafeSet(Length, value);
         Length++;
@@ -95,45 +108,45 @@ public sealed class PointerList<T> : IDisposable where T : unmanaged
     {
         if (index < 0 || index >= Length)
             throw new IndexOutOfRangeException();
-
-        var elementsToCopy = Length - index - 1;
-
         unsafe
         {
+            var elementsToCopy = Length - index - 1;
+            long elementsToCopySize = elementsToCopy * sizeof(T);
+            
             if (elementsToCopy > 0)
             {
                 Buffer.MemoryCopy(
-                    &Pointer[index + 1],
-                    &Pointer[index],
-                    (long)elementsToCopy * sizeof(T),
-                    (long)elementsToCopy * sizeof(T)
+                    &_pointer[index + 1],
+                    &_pointer[index],
+                    elementsToCopySize,
+                    elementsToCopySize
                 );
             }
         }
 
         Length--;
-
-        if (Length == Capacity - 20)
-        {
-            Console.WriteLine($"REALLOCATING FROM {Capacity} to {Capacity - 20}");
-            Reallocate(Capacity - 20);
-        }
     }
 
     public void Clear()
     {
         unsafe
         {
-            NativeMemory.Free(Pointer);
-            Pointer = null;
+            NativeMemory.Free(_pointer);
+            _pointer = null;
         }
 
         Length = 0;
         Capacity = 0;
     }
 
+    ~PointerList()
+    {
+        Clear();
+    }
+
     public void Dispose()
     {
         Clear();
+        GC.SuppressFinalize(this);
     }
 }
