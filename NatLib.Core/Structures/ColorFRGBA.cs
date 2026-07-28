@@ -3,18 +3,18 @@ using System.Runtime.CompilerServices;
 
 namespace NatLib.Core.Structures;
 
-public struct Color : IEquatable<Color>
+public struct ColorFRGBA : IEquatable<ColorFRGBA>
 {
     public Vector4 Value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color(float r, float g, float b, float a = 1f) => Value = new Vector4(r, g, b, a);
+    public ColorFRGBA(float r, float g, float b, float a = 1f) => Value = new Vector4(r, g, b, a);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color(Vector4 value) => Value = value;
+    public ColorFRGBA(Vector4 value) => Value = value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color(Vector3 rgb, float a = 1f) => Value = new Vector4(rgb, a);
+    public ColorFRGBA(Vector3 rgb, float a = 1f) => Value = new Vector4(rgb, a);
 
     // --- Properties ---
 
@@ -56,13 +56,13 @@ public struct Color : IEquatable<Color>
         get => 0.2126f * Value.X + 0.7152f * Value.Y + 0.0722f * Value.Z;
     }
 
-    public Color Clamped
+    public ColorFRGBA Clamped
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => new(Vector4.Clamp(Value, Vector4.Zero, Vector4.One));
     }
 
-    public Color Opaque
+    public ColorFRGBA Opaque
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => new(Value.X, Value.Y, Value.Z);
@@ -77,10 +77,10 @@ public struct Color : IEquatable<Color>
     // --- Factory ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color FromBytes(byte r, byte g, byte b, byte a = 255) =>
+    public static ColorFRGBA FromBytes(byte r, byte g, byte b, byte a = 255) =>
         new(r / 255f, g / 255f, b / 255f, a / 255f);
 
-    public static Color FromHex(string hex)
+    public static ColorFRGBA FromHex(string hex)
     {
         hex = hex.TrimStart('#');
         var r = Convert.ToByte(hex[0..2], 16);
@@ -91,7 +91,7 @@ public struct Color : IEquatable<Color>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color FromHSV(float h, float s, float v)
+    public static ColorFRGBA FromHSV(float h, float s, float v)
     {
         var c = v * s;
         var x = c * (1f - MathF.Abs(h / 60f % 2f - 1f));
@@ -114,63 +114,63 @@ public struct Color : IEquatable<Color>
                 break;
         }
 
-        return new Color(r + m, g + m, b + m);
+        return new ColorFRGBA(r + m, g + m, b + m);
     }
 
     // --- Operators ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator +(Color a, Color b) => new(a.Value + b.Value);
+    public static ColorFRGBA operator +(ColorFRGBA a, ColorFRGBA b) => new(a.Value + b.Value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator -(Color a, Color b) => new(a.Value - b.Value);
+    public static ColorFRGBA operator -(ColorFRGBA a, ColorFRGBA b) => new(a.Value - b.Value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator *(Color a, Color b) => new(a.Value * b.Value);
+    public static ColorFRGBA operator *(ColorFRGBA a, ColorFRGBA b) => new(a.Value * b.Value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator *(Color a, float s) => new(a.Value * s);
+    public static ColorFRGBA operator *(ColorFRGBA a, float s) => new(a.Value * s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator *(float s, Color a) => new(a.Value * s);
+    public static ColorFRGBA operator *(float s, ColorFRGBA a) => new(a.Value * s);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color operator /(Color a, float s) => new(a.Value / s);
+    public static ColorFRGBA operator /(ColorFRGBA a, float s) => new(a.Value / s);
 
-    public static bool operator ==(Color a, Color b) => a.Value == b.Value;
+    public static bool operator ==(ColorFRGBA a, ColorFRGBA b) => a.Value == b.Value;
 
-    public static bool operator !=(Color a, Color b) => a.Value != b.Value;
+    public static bool operator !=(ColorFRGBA a, ColorFRGBA b) => a.Value != b.Value;
 
     // --- Conversions ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Vector4(Color c) => c.Value;
+    public static implicit operator Vector4(ColorFRGBA c) => c.Value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Color(Vector4 v) => new(v);
+    public static implicit operator ColorFRGBA(Vector4 v) => new(v);
 
     // --- Methods ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color Lerp(Color a, Color b, float t) => new(Vector4.Lerp(a.Value, b.Value, t));
+    public static ColorFRGBA Lerp(ColorFRGBA a, ColorFRGBA b, float t) => new(Vector4.Lerp(a.Value, b.Value, t));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color Min(Color a, Color b) => new(Vector4.Min(a.Value, b.Value));
+    public static ColorFRGBA Min(ColorFRGBA a, ColorFRGBA b) => new(Vector4.Min(a.Value, b.Value));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Color Max(Color a, Color b) => new(Vector4.Max(a.Value, b.Value));
+    public static ColorFRGBA Max(ColorFRGBA a, ColorFRGBA b) => new(Vector4.Max(a.Value, b.Value));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color WithAlpha(float alpha) => new(Value.X, Value.Y, Value.Z, alpha);
+    public ColorFRGBA WithAlpha(float alpha) => new(Value.X, Value.Y, Value.Z, alpha);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color WithR(float r) => new(r, Value.Y, Value.Z, Value.W);
+    public ColorFRGBA WithR(float r) => new(r, Value.Y, Value.Z, Value.W);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color WithG(float g) => new(Value.X, g, Value.Z, Value.W);
+    public ColorFRGBA WithG(float g) => new(Value.X, g, Value.Z, Value.W);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Color WithB(float b) => new(Value.X, Value.Y, b, Value.W);
+    public ColorFRGBA WithB(float b) => new(Value.X, Value.Y, b, Value.W);
 
     public (byte R, byte G, byte B, byte A) ToBytes()
     {
@@ -197,26 +197,26 @@ public struct Color : IEquatable<Color>
 
     // --- Predefined ---
 
-    public static readonly Color Transparent = new(0, 0, 0, 0);
-    public static readonly Color Black = new(0, 0, 0);
-    public static readonly Color White = new(1, 1, 1);
-    public static readonly Color Red = new(1, 0, 0);
-    public static readonly Color Green = new(0, 1, 0);
-    public static readonly Color Blue = new(0, 0, 1);
-    public static readonly Color Yellow = new(1, 1, 0);
-    public static readonly Color Cyan = new(0, 1, 1);
-    public static readonly Color Magenta = new(1, 0, 1);
-    public static readonly Color Gray = new(0.5f, 0.5f, 0.5f);
-    public static readonly Color Orange = new(1f, 0.647f, 0f);
-    public static readonly Color CornflowerBlue = new(0.392f, 0.584f, 0.929f);
+    public static readonly ColorFRGBA Transparent = new(0, 0, 0, 0);
+    public static readonly ColorFRGBA Black = new(0, 0, 0);
+    public static readonly ColorFRGBA White = new(1, 1, 1);
+    public static readonly ColorFRGBA Red = new(1, 0, 0);
+    public static readonly ColorFRGBA Green = new(0, 1, 0);
+    public static readonly ColorFRGBA Blue = new(0, 0, 1);
+    public static readonly ColorFRGBA Yellow = new(1, 1, 0);
+    public static readonly ColorFRGBA Cyan = new(0, 1, 1);
+    public static readonly ColorFRGBA Magenta = new(1, 0, 1);
+    public static readonly ColorFRGBA Gray = new(0.5f, 0.5f, 0.5f);
+    public static readonly ColorFRGBA Orange = new(1f, 0.647f, 0f);
+    public static readonly ColorFRGBA CornflowerBlue = new(0.392f, 0.584f, 0.929f);
 
     // --- Equality ---
 
-    public bool Equals(Color other) => Value.Equals(other.Value);
+    public bool Equals(ColorFRGBA other) => Value.Equals(other.Value);
 
-    public override bool Equals(object? obj) => obj is Color o && Equals(o);
+    public override bool Equals(object? obj) => obj is ColorFRGBA o && Equals(o);
 
     public override int GetHashCode() => Value.GetHashCode();
 
-    public override string ToString() => $"Color({R:F3}, {G:F3}, {B:F3}, {A:F3})";
+    public override string ToString() => $"ColorFRGBA({R:F3}, {G:F3}, {B:F3}, {A:F3})";
 }

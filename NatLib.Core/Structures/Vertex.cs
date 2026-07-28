@@ -7,9 +7,9 @@ namespace NatLib.Core.Structures;
 [StructLayout(LayoutKind.Sequential)]
 public struct Vertex : IEquatable<Vertex>
 {
-    public Point2 Position;
-    public Color Color;
-    public Point2 TexCoord;
+    public Point2F Position;
+    public ColorFRGBA ColorFrgba;
+    public Point2F TexCoord;
 
     // --- Size / Offset info ---
 
@@ -17,71 +17,71 @@ public struct Vertex : IEquatable<Vertex>
 
     public static readonly int PositionOffset = (int)Marshal.OffsetOf<Vertex>(nameof(Position));
 
-    public static readonly int ColorOffset = (int)Marshal.OffsetOf<Vertex>(nameof(Color));
+    public static readonly int ColorOffset = (int)Marshal.OffsetOf<Vertex>(nameof(ColorFrgba));
 
     public static readonly int TexCoordOffset = (int)Marshal.OffsetOf<Vertex>(nameof(TexCoord));
 
     // --- Constructors ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex(Point2 position, Color color, Point2 texCoord)
+    public Vertex(Point2F position, ColorFRGBA colorFrgba, Point2F texCoord)
     {
         Position = position;
-        Color = color;
+        ColorFrgba = colorFrgba;
         TexCoord = texCoord;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex(float x, float y, Color color, float u, float v)
+    public Vertex(float x, float y, ColorFRGBA colorFrgba, float u, float v)
     {
-        Position = new Point2(x, y);
-        Color = color;
-        TexCoord = new Point2(u, v);
+        Position = new Point2F(x, y);
+        ColorFrgba = colorFrgba;
+        TexCoord = new Point2F(u, v);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex(Point2 position, Color color)
+    public Vertex(Point2F position, ColorFRGBA colorFrgba)
     {
         Position = position;
-        Color = color;
-        TexCoord = Point2.Zero;
+        ColorFrgba = colorFrgba;
+        TexCoord = Point2F.Zero;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex(Point2 position)
+    public Vertex(Point2F position)
     {
         Position = position;
-        Color = Color.White;
-        TexCoord = Point2.Zero;
+        ColorFrgba = ColorFRGBA.White;
+        TexCoord = Point2F.Zero;
     }
 
     // --- With-methods (immutable modification) ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex WithPosition(Point2 position) => new(position, Color, TexCoord);
+    public Vertex WithPosition(Point2F position) => new(position, ColorFrgba, TexCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex WithColor(Color color) => new(Position, color, TexCoord);
+    public Vertex WithColor(ColorFRGBA colorFrgba) => new(Position, colorFrgba, TexCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex WithTexCoord(Point2 texCoord) => new(Position, Color, texCoord);
+    public Vertex WithTexCoord(Point2F texCoord) => new(Position, ColorFrgba, texCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex WithAlpha(float alpha) => new(Position, Color.WithAlpha(alpha), TexCoord);
+    public Vertex WithAlpha(float alpha) => new(Position, ColorFrgba.WithAlpha(alpha), TexCoord);
 
     // --- Transform ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex Translate(Point2 offset) =>
-        new(new Point2(Position.Value + offset.Value), Color, TexCoord);
+    public Vertex Translate(Point2F offset) =>
+        new(new Point2F(Position.Value + offset.Value), ColorFrgba, TexCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vertex Scale(float scale) =>
-        new(new Point2(Position.Value * scale), Color, TexCoord);
+        new(new Point2F(Position.Value * scale), ColorFrgba, TexCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vertex Scale(Point2 scale) =>
-        new(new Point2(Position.Value * scale.Value), Color, TexCoord);
+    public Vertex Scale(Point2F scale) =>
+        new(new Point2F(Position.Value * scale.Value), ColorFrgba, TexCoord);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vertex Rotate(float radians)
@@ -90,21 +90,21 @@ public struct Vertex : IEquatable<Vertex>
         var sin = MathF.Sin(radians);
         var x = Position.X * cos - Position.Y * sin;
         var y = Position.X * sin + Position.Y * cos;
-        return new Vertex(new Point2(x, y), Color, TexCoord);
+        return new Vertex(new Point2F(x, y), ColorFrgba, TexCoord);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vertex Transform(Matrix3x2 matrix) =>
-        new(new Point2(Vector2.Transform(Position.Value, matrix)), Color, TexCoord);
+        new(new Point2F(Vector2.Transform(Position.Value, matrix)), ColorFrgba, TexCoord);
 
     // --- Interpolation ---
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vertex Lerp(Vertex a, Vertex b, float t) =>
         new(
-            Point2.Lerp(a.Position, b.Position, t),
-            Color.Lerp(a.Color, b.Color, t),
-            Point2.Lerp(a.TexCoord, b.TexCoord, t)
+            Point2F.Lerp(a.Position, b.Position, t),
+            ColorFRGBA.Lerp(a.ColorFrgba, b.ColorFrgba, t),
+            Point2F.Lerp(a.TexCoord, b.TexCoord, t)
         );
 
     // --- Span interop (для GPU upload без копирования) ---
@@ -125,22 +125,22 @@ public struct Vertex : IEquatable<Vertex>
 
     // --- Equality ---
     public static bool operator ==(Vertex a, Vertex b) =>
-        a.Position == b.Position && a.Color == b.Color && a.TexCoord == b.TexCoord;
+        a.Position == b.Position && a.ColorFrgba == b.ColorFrgba && a.TexCoord == b.TexCoord;
 
     public static bool operator !=(Vertex a, Vertex b) => !(a == b);
 
     public bool Equals(Vertex other) =>
         Position.Equals(other.Position) &&
-        Color.Equals(other.Color) &&
+        ColorFrgba.Equals(other.ColorFrgba) &&
         TexCoord.Equals(other.TexCoord);
 
     public override bool Equals(object? obj) => obj is Vertex o && Equals(o);
 
     public override int GetHashCode() => HashCode.Combine(
         Position.GetHashCode(),
-        Color.GetHashCode(),
+        ColorFrgba.GetHashCode(),
         TexCoord.GetHashCode());
 
     public override string ToString() =>
-        $"Vertex(Pos:{Position}, Col:{Color}, UV:{TexCoord})";
+        $"Vertex(Pos:{Position}, Col:{ColorFrgba}, UV:{TexCoord})";
 }
