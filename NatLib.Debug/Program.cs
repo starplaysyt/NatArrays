@@ -215,6 +215,6 @@ public class Program
         
         // PersistenceDebug.Run();
         
-        ConRendererManualTests.Run();
+        DependencyInjectionDebug.Run();
     }
 }

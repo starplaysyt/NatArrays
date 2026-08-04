@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\NatLib.Arrays\NatLib.Arrays.csproj"/>
+        <ProjectReference Include="..\NatLib.DI\NatLib.DI.csproj" />
         <ProjectReference Include="..\NatLib.Logging\NatLib.Logging.csproj" />
         <ProjectReference Include="..\NatLib.UniConsole\NatLib.UniConsole.csproj"/>
         <ProjectReference Include="..\NatLib.Core\NatLib.Core.csproj"/>

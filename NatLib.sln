@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatLib.EntityFramework.Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatLib.EntityFramework.Application", "NatLib.EntityFramework.Application\NatLib.EntityFramework.Application.csproj", "{71DA5B17-84C9-48AF-9721-58E4EB5DBCE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NatLib.DI", "NatLib.DI\NatLib.DI.csproj", "{AC0B9052-FA13-4A15-8C81-D3F2D089B5B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{71DA5B17-84C9-48AF-9721-58E4EB5DBCE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71DA5B17-84C9-48AF-9721-58E4EB5DBCE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71DA5B17-84C9-48AF-9721-58E4EB5DBCE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC0B9052-FA13-4A15-8C81-D3F2D089B5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC0B9052-FA13-4A15-8C81-D3F2D089B5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC0B9052-FA13-4A15-8C81-D3F2D089B5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC0B9052-FA13-4A15-8C81-D3F2D089B5B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
