@@ -37,6 +37,8 @@ in my projects.
 - **NatLib.Tests** - not a module, just a testing playground with xUnit.
 - **NatLib.UniConsole** - contains completed and extendable console-style conversation system and provides ways of
   "rendering" something in console(like lines, message-boxed, and other unicode-art stuff)
+- **NatLib.DI** - ASP.NET-like dependency injection library (I know that probably there is one already, but whatever). It is pretty simple btw, not doing something special, just DI and that's all.
+- **NatLib.EntityFramework** - predefined abstract repositories and whole entity -> infrastructure pipeline in Clean Architecture pattern. Do not support tracking - everything is build around .AsNoTracking() and dynamic delegate-based predicates and selectors(new ExecuteUpdateAsync and ExecuteDeleteAsync are doing all the work). Supports extendability and editability of defined repositories not only at implementation, but at the interface level too. Documentation coming soon, thats pretty powerful because it's supresses 90% of working with simple entity repositories and implements general methods for working with the infrastructure layer. THIS IS MADE ONLY FOR ENTITYFRAMEWORK - for Dapper/ADO.NET or something else will be used completely different interfaces. Yes, we are connecting EntityFramework to architecture directly, but due to development speed it could grant - no losses, imho. And responsibility still different - Application layer knows completely nothing about database, context, or query, and does not depends on that(depends on abstractions of EF probably, but there is no reason to use them at all in Application layer, it is used only for Domain model configurationless declaration)
 
 ---
 
@@ -76,6 +78,7 @@ graph LR;
   C --> B
   D --> X[Dispose yourself]
 ```
+
 ---
 
 ## License
