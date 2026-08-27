@@ -7,7 +7,7 @@ public class DictionaryVsSortedList
 {
     public static void Run()
     {
-                var random = Random.Shared;
+        var random = Random.Shared;
 
         var res = new Dictionary<(int, int), ConsoleColorExt>
         {

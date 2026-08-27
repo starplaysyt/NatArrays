@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics;
+using NatLib.BufConsole;
 using NatLib.UniConsole.Arguments;
 using NatLib.UniConsole.Conversations;
 using NatLib.UniConsole.Graphics;
@@ -214,7 +215,7 @@ public class Program
         // PointerListDebugTests.Run();
         
         // PersistenceDebug.Run();
-        
-        DependencyInjectionDebug.Run();
+        bool ansiSupported = WindowsAnsi.TryEnable();
+        BufConsoleDebug.Run();
     }
 }
