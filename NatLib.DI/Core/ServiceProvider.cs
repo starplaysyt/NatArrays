@@ -125,8 +125,6 @@ public class ServiceProvider : IServiceProvider, IDisposable
                 case ServiceLifetime.Scoped:
                     if (_root == null)
                     {
-                        throw new DependencyResolutionException(descriptor.ServiceType,
-                            $"Unable to get scoped service from root provider.");
                     }
                     return _scopedInstances.GetOrAdd(descriptor.ServiceType, _ =>
                     {
