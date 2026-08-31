@@ -1,5 +1,4 @@
-﻿using NatLib.DI.Core;
-using NatLib.DI.Extensions;
+﻿using NatLib.DI;
 
 namespace NatLib.Debug;
 
@@ -72,13 +71,13 @@ public static class DependencyInjectionDebug
 
     public static void Run()
     {
-        var services = new ServiceCollection();
+        var services = new ServiceBuilder();
         
         services.AddSingleton<ILogger, ConsoleLogger>();
         services.AddScoped<IRepository, DatabaseRepository>();
         services.AddTransient<IUserService, UserService>();
         
-        var serviceProvider = services.BuildServiceProvider();
+        var serviceProvider = services.Build();
 
         Console.WriteLine("Singleton: ");
         var logger1 = serviceProvider.GetRequiredService<ILogger>();
@@ -88,15 +87,18 @@ public static class DependencyInjectionDebug
         Console.WriteLine($"Same instance? {ReferenceEquals(logger1, logger2)}"); // true
 
         Console.WriteLine("Transient: ");
-        var userService1 = serviceProvider.GetRequiredService<IUserService>();
-        var userService2 = serviceProvider.GetRequiredService<IUserService>();
-        Console.WriteLine($"Same instance? {ReferenceEquals(userService1, userService2)}"); // false
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var userService1 = scope.GetRequiredService<IUserService>();
+            var userService2 = scope.GetRequiredService<IUserService>();
+            Console.WriteLine($"Same instance? {ReferenceEquals(userService1, userService2)}"); // false
+        }
 
         Console.WriteLine("Scoped: ");
         using (var scope = serviceProvider.CreateScope())
         {
-            var repo1 = scope.ServiceProvider.GetRequiredService<IRepository>();
-            var repo2 = scope.ServiceProvider.GetRequiredService<IRepository>();
+            var repo1 = scope.GetRequiredService<IRepository>();
+            var repo2 = scope.GetRequiredService<IRepository>();
             Console.WriteLine($"Same in scope? {ReferenceEquals(repo1, repo2)}"); // True
 
             repo1.Save("scoped data");
@@ -104,14 +106,14 @@ public static class DependencyInjectionDebug
         
         using (var scope2 = serviceProvider.CreateScope())
         {
-            var repo3 = scope2.ServiceProvider.GetRequiredService<IRepository>();
+            var repo3 = scope2.GetRequiredService<IRepository>();
             repo3.Save("another scope data");
         }
 
         Console.WriteLine("Full scenario: ");
         using (var scope = serviceProvider.CreateScope())
         {
-            var userSvc = scope.ServiceProvider.GetRequiredService<IUserService>();
+            var userSvc = scope.GetRequiredService<IUserService>();
             userSvc.CreateUser("Alice");
             userSvc.CreateUser("Bob");
         }

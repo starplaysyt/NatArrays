@@ -29,6 +29,7 @@
     <ItemGroup>
         <ProjectReference Include="..\NatLib.Arrays\NatLib.Arrays.csproj"/>
         <ProjectReference Include="..\NatLib.Core\NatLib.Core.csproj"/>
+        <ProjectReference Include="..\NatLib.DI\NatLib.DI.csproj" />
     </ItemGroup>
 
 </Project>

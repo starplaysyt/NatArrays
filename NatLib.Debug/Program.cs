@@ -215,7 +215,9 @@ public class Program
         // PointerListDebugTests.Run();
         
         // PersistenceDebug.Run();
-        bool ansiSupported = WindowsAnsi.TryEnable();
-        BufConsoleDebug.Run();
+        // bool ansiSupported = WindowsAnsi.TryEnable();
+        // BufConsoleDebug.Run();
+        
+        DependencyInjectionDebug.Run();
     }
 }
