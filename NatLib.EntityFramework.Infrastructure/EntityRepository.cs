@@ -13,8 +13,8 @@ public abstract class EntityRepository<TEntity, TKey, TUpdateMap>
 {
     public abstract DbSet<TEntity> DbSet { get; }
 
-    public abstract Action<UpdateSettersBuilder<TEntity>> UpdateSetter(
-        TUpdateMap updateMap);
+    public virtual Action<UpdateSettersBuilder<TEntity>> BuildUpdateSetter(
+        TUpdateMap updateMap) => UpdateSetterGenerator<TEntity, TKey, TUpdateMap>.Compiled(updateMap);
 
     public async Task<bool> AnyAsync(CancellationToken ct = default)
         => await DbSet.AsNoTracking().AnyAsync(ct);
@@ -126,7 +126,7 @@ public abstract class EntityRepository<TEntity, TKey, TUpdateMap>
         CancellationToken ct = default)
         => await DbSet.AsNoTracking()
             .Where(e => e.Id.Equals(id))
-            .ExecuteUpdateAsync(UpdateSetter(updateMap), ct) > 0;
+            .ExecuteUpdateAsync(BuildUpdateSetter(updateMap), ct) > 0;
 
     public async Task<int> UpdateAsync(
         Expression<Func<TEntity, bool>> predicate,
@@ -134,7 +134,7 @@ public abstract class EntityRepository<TEntity, TKey, TUpdateMap>
         CancellationToken ct = default)
         => await DbSet.AsNoTracking()
             .Where(predicate)
-            .ExecuteUpdateAsync(UpdateSetter(updateMap), ct);
+            .ExecuteUpdateAsync(BuildUpdateSetter(updateMap), ct);
 
     public async Task<bool> DeleteAsync(
         TKey id,

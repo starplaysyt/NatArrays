@@ -11,15 +11,4 @@ public class UserEntityRepository(AppDbContext context) :
 {
     protected override DbContext Context => context;
     public override DbSet<UserEntity> DbSet => context.Users;
-
-    public override Action<UpdateSettersBuilder<UserEntity>> UpdateSetter(UserEntityUpdateMap updateMap)
-    {
-        return builder =>
-        {
-            if (updateMap.Login is not null)
-                builder.SetProperty(x => x.Login, updateMap.Login);
-            if (updateMap.Password is not null)
-                builder.SetProperty(x => x.Password, updateMap.Password);
-        };
-    }
 }
