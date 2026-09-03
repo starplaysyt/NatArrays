@@ -5,18 +5,20 @@ using NatLib.EntityFramework.Domain;
 
 namespace NatLib.EntityFramework.Infrastructure;
 
-internal static class UpdateSetterGenerator<TEntity, TKey, TUpdateMap>
+public static class UpdateSetterGenerator<TEntity, TKey, TUpdateMap>
     where TEntity : DomainEntity<TKey>
     where TKey : IComparable<TKey>
 {
     private static readonly MethodInfo SetPropertyDefinition = ResolveSetPropertyDefinition();
+    private static readonly PropertyInfo NullableFieldIsSetProp = ResolveNullableFieldIsSet();
+    private static readonly PropertyInfo NullableFieldValueProp = ResolveNullableFieldValue();
 
     public static readonly Func<TUpdateMap, Action<UpdateSettersBuilder<TEntity>>> Compiled = Build();
 
     private static Func<TUpdateMap, Action<UpdateSettersBuilder<TEntity>>> Build()
     {
         var updateMapParam = Expression.Parameter(typeof(TUpdateMap), "updateMap");
-        var builderParam   = Expression.Parameter(typeof(UpdateSettersBuilder<TEntity>), "builder");
+        var builderParam = Expression.Parameter(typeof(UpdateSettersBuilder<TEntity>), "builder");
 
         var statements = new List<Expression>();
 
@@ -24,7 +26,9 @@ internal static class UpdateSetterGenerator<TEntity, TKey, TUpdateMap>
 
         foreach (var mapProperty in mapProperties)
         {
-            statements.Add(BuildPropertyAssignment(mapProperty, updateMapParam, builderParam));
+            var stmt = BuildPropertyAssignment(mapProperty, updateMapParam, builderParam);
+            if (stmt is not null)
+                statements.Add(stmt);
         }
 
         Expression body = statements.Count > 0
@@ -33,82 +37,156 @@ internal static class UpdateSetterGenerator<TEntity, TKey, TUpdateMap>
 
         var innerLambda = Expression.Lambda<Action<UpdateSettersBuilder<TEntity>>>(body, builderParam);
         var outerLambda = Expression.Lambda<Func<TUpdateMap, Action<UpdateSettersBuilder<TEntity>>>>(
-            innerLambda, updateMapParam);
+            innerLambda,
+            updateMapParam);
 
         return outerLambda.Compile();
     }
 
-    private static Expression BuildPropertyAssignment(
+    private static Expression? BuildPropertyAssignment(
         PropertyInfo mapProperty,
         ParameterExpression updateMapParam,
         ParameterExpression builderParam)
     {
-        var entityProp = typeof(TEntity).GetProperty(mapProperty.Name, BindingFlags.Public | BindingFlags.Instance)
-                         ?? throw new InvalidOperationException(
-                             $"Unable to locate property '{mapProperty.Name}' in type '{typeof(TEntity).Name}'.");
+        var entityProp = typeof(TEntity).GetProperty(mapProperty.Name, BindingFlags.Public | BindingFlags.Instance);
+        if (entityProp is null)
+            return null;
 
         var mapPropType = mapProperty.PropertyType;
+        var entityPropType = entityProp.PropertyType;
+
+        var nullableFieldArg = GetNullableFieldInnerType(mapPropType);
+
+        if (nullableFieldArg is not null)
+        {
+            return BuildNullableFieldAssignment(
+                mapProperty,
+                mapPropType,
+                nullableFieldArg,
+                entityProp,
+                entityPropType,
+                updateMapParam,
+                builderParam);
+        }
+        else
+        {
+            return BuildStandardNullableAssignment(
+                mapProperty,
+                mapPropType,
+                entityProp,
+                entityPropType,
+                updateMapParam,
+                builderParam);
+        }
+    }
+
+    private static Expression BuildNullableFieldAssignment(
+        PropertyInfo mapProperty,
+        Type mapPropType,
+        Type innerType,
+        PropertyInfo entityProp,
+        Type entityPropType,
+        ParameterExpression updateMapParam,
+        ParameterExpression builderParam)
+    {
+        var mapPropAccess = Expression.Property(updateMapParam, mapProperty);
+        var isSetAccess = Expression.Property(mapPropAccess, NullableFieldIsSetProp);
+        var valueAccess = Expression.Property(mapPropAccess, NullableFieldValueProp);
+        
+        Expression valueExpr = valueAccess;
+        if (valueAccess.Type != entityPropType)
+        {
+            valueExpr = Expression.Convert(valueAccess, entityPropType);
+        }
+        
+        var propertySelector = BuildPropertySelector(entityProp);
+        var expressionType = typeof(Expression<>).MakeGenericType(
+            typeof(Func<,>).MakeGenericType(typeof(TEntity), entityPropType));
+        var selectorConstant = Expression.Constant(propertySelector, expressionType);
+        
+        var setMethod = SetPropertyDefinition.MakeGenericMethod(entityPropType);
+        var setCall = Expression.Call(builderParam, setMethod, selectorConstant, valueExpr);
+        
+        return Expression.IfThen(isSetAccess, setCall);
+    }
+    
+    private static Expression BuildStandardNullableAssignment(
+        PropertyInfo mapProperty,
+        Type mapPropType,
+        PropertyInfo entityProp,
+        Type entityPropType,
+        ParameterExpression updateMapParam,
+        ParameterExpression builderParam)
+    {
         if (!IsNullableAssignable(mapPropType))
             throw new InvalidOperationException(
-                $"Property '{mapProperty.Name}' of type '{mapPropType.Name}' cannot be null-checked. " +
-                "Use a reference type or Nullable<T> in the update map.");
+                $"Property '{mapProperty.Name}' of type '{mapPropType.Name}' is not nullable. " +
+                "Use Nullable<T>, a reference type, or NullableField<T>.");
 
         var mapPropAccess = Expression.Property(updateMapParam, mapProperty);
         var nullCheck = Expression.NotEqual(mapPropAccess, Expression.Constant(null, mapPropType));
 
-        var delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), entityProp.PropertyType);
-        
+        Expression valueExpr = mapPropAccess;
+        if (mapPropType != entityPropType)
+        {
+            valueExpr = Expression.Convert(mapPropAccess, entityPropType);
+        }
+
+        var propertySelector = BuildPropertySelector(entityProp);
+        var expressionType = typeof(Expression<>).MakeGenericType(
+            typeof(Func<,>).MakeGenericType(typeof(TEntity), entityPropType));
+        var selectorConstant = Expression.Constant(propertySelector, expressionType);
+
+        var setMethod = SetPropertyDefinition.MakeGenericMethod(entityPropType);
+        var setCall = Expression.Call(builderParam, setMethod, selectorConstant, valueExpr);
+
+        return Expression.IfThen(nullCheck, setCall);
+    }
+    
+    private static LambdaExpression BuildPropertySelector(PropertyInfo entityProp)
+    {
         var entityParam = Expression.Parameter(typeof(TEntity), "x");
-        var propertySelector = Expression.Lambda(
+        var delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), entityProp.PropertyType);
+        return Expression.Lambda(
             delegateType,
             Expression.Property(entityParam, entityProp),
             entityParam);
+    }
 
-        Expression valueExpr = mapPropAccess;
-        if (mapPropType != entityProp.PropertyType)
-        {
-            valueExpr = Expression.Convert(mapPropAccess, entityProp.PropertyType);
-        }
-
-        var expressionType = typeof(Expression<>).MakeGenericType(delegateType);
-        var propertySelectorConstant = Expression.Constant(propertySelector, expressionType);
-        
-        var setPropertyGenMethod = SetPropertyDefinition.MakeGenericMethod(entityProp.PropertyType);
-        
-        var setPropertyCall = Expression.Call(
-            builderParam,
-            setPropertyGenMethod,
-            propertySelectorConstant, 
-            valueExpr);
-
-        return Expression.IfThen(nullCheck, setPropertyCall);
+    private static Type? GetNullableFieldInnerType(Type type)
+    {
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(NullableField<>))
+            return type.GetGenericArguments()[0];
+        return null;
     }
 
     private static MethodInfo ResolveSetPropertyDefinition()
     {
         var builderType = typeof(UpdateSettersBuilder<TEntity>);
+        var method = builderType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+            .FirstOrDefault(m =>
+            {
+                if (m.Name != "SetProperty" || !m.IsGenericMethodDefinition) return false;
+                var p = m.GetParameters();
+                return p.Length == 2 && p[1].ParameterType == m.GetGenericArguments()[0];
+            });
+        return method ?? throw new InvalidOperationException(
+            $"SetProperty<T>(Expression<Func<TEntity,T>>, T) not found on '{builderType.Name}'.");
+    }
 
-        var methods = builderType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.Name == "SetProperty"
-                        && m.IsGenericMethodDefinition
-                        && m.GetParameters().Length == 2)
-            .ToList();
+    private static PropertyInfo ResolveNullableFieldIsSet()
+    {
+        // Берём из любого закрытого NullableField<> — PropertyInfo одинаковый для всех
+        var sampleType = typeof(NullableField<>).MakeGenericType(typeof(int));
+        return sampleType.GetProperty("IsSet")
+               ?? throw new InvalidOperationException("NullableField<T>.IsSet not found.");
+    }
 
-        var method = methods.FirstOrDefault(m =>
-        {
-            var parameters = m.GetParameters();
-            var genericArgs = m.GetGenericArguments();
-            if (genericArgs.Length != 1) return false;
-
-            var tProperty = genericArgs[0];
-            return parameters[1].ParameterType == tProperty;
-        });
-
-        if (method is null) 
-            throw new InvalidOperationException(
-                $"Method SetProperty<TProperty>(Expression<Func<{builderType.Name}, TProperty>>, TProperty) not found.");
-
-        return method;
+    private static PropertyInfo ResolveNullableFieldValue()
+    {
+        var sampleType = typeof(NullableField<>).MakeGenericType(typeof(int));
+        return sampleType.GetProperty("Value")
+               ?? throw new InvalidOperationException("NullableField<T>.Value not found.");
     }
 
     private static bool IsNullableAssignable(Type type) =>
