@@ -1,12 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics;
-using NatLib.BufConsole;
-using NatLib.UniConsole.Arguments;
-using NatLib.UniConsole.Conversations;
-using NatLib.UniConsole.Graphics;
-using NatLib.UniConsole.Interfaces;
-
-namespace NatLib.Debug;
+﻿namespace NatLib.Debug;
 
 public class Program
 {
@@ -218,6 +210,8 @@ public class Program
         // bool ansiSupported = WindowsAnsi.TryEnable();
         // BufConsoleDebug.Run();
         
-        DependencyInjectionDebug.Run();
+        // DependencyInjectionDebug.Run();
+
+        EntityFrameworkTestsProgram.Run().Wait();
     }
 }
